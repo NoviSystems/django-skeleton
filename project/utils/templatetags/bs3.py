@@ -27,7 +27,7 @@ def cols(sizes):
         'col-md-6 col-xs-8'
     """
     return ' '.join([
-        f'col-{k}-{v}'
+        'col-{}-{}'.format(k,v)
         for k, v in parse_sizes(sizes).items()
     ])
 
@@ -42,6 +42,6 @@ def inversecols(sizes):
         'col-md-6 col-xs-4'
     """
     return ' '.join([
-        f'col-{k}-{GRID_COLUMNS-int(v)}'
+        'col-{}-{}'.format(k,GRID_COLUMNS-int(v))
         for k, v in parse_sizes(sizes).items()
     ])
