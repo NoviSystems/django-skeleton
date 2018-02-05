@@ -40,7 +40,7 @@ env.read_env(path('.env'))  # parse .env into os.environ
 
 
 # Authentication
-AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = 'utils.User'
 
 LOGIN_URL = reverse_lazy('login')
 
