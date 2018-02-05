@@ -8,6 +8,7 @@ click==6.7                # via pip-tools
 colorlog==2.10.0
 contextlib2==0.5.4        # via raven
 django-environ==0.4.3
+django-template-forms==0.3.1
 django==1.11
 first==2.0.1              # via pip-tools
 httplib2==0.10.3          # via oauth2client

@@ -1,0 +1,15 @@
+{# Render the top errors at the bottom #}
+
+{% for field in hidden_output %}
+{{ field }}
+{% endfor %}
+
+{% for field in output %}
+{{ field }}
+{% endfor %}
+
+{% if top_errors %}
+<div class="text-danger">
+    {{ top_errors }}
+</div>
+{% endif %}
