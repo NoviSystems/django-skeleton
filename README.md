@@ -88,7 +88,7 @@ deployments. For this example we assume you are deploying your code to
    ```
    [program:myproject]
    directory = /opt/my-deployment-dir
-   command = /opt/my-deployment-dir/env/bin/gunicorn --pythonpath /opt/my-deployment-dir/ --bind=unix:/opt/my-deployment-dir/gunicorn.sock project.wsgi
+   command = /opt/my-deployment-dir/env/bin/gunicorn --pythonpath /opt/my-deployment-dir/ --bind=unix:/opt/my-deployment-dir/gunicorn.sock --timeout 120 project.wsgi
    stdout_logfile = /opt/my-deployment-dir/stdout.log
    redirect_stderr = true
    autostart = true
