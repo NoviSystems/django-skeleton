@@ -121,6 +121,7 @@ if you want an SSL version):
            proxy_redirect off;
            proxy_pass http://gunicorn;
            client_max_body_size 100m;
+           proxy_read_timeout 300;
        }
    }
    ```
@@ -249,6 +250,7 @@ your nginx config that looks like this:
             proxy_redirect off;
             proxy_pass http://gunicorn;
             client_max_body_size 100m;
+            proxy_read_timeout 300;
         }
     }
     ```
