@@ -120,6 +120,7 @@ if you want an SSL version):
            proxy_set_header Host $http_host;
            proxy_redirect off;
            proxy_pass http://gunicorn;
+           client_max_body_size 100m;
        }
    }
    ```
@@ -247,6 +248,7 @@ your nginx config that looks like this:
             proxy_set_header Host $http_host;
             proxy_redirect off;
             proxy_pass http://gunicorn;
+            client_max_body_size 100m;
         }
     }
     ```
