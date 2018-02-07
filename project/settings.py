@@ -10,5 +10,9 @@ the './deploy' directory.
 from .common_settings import *
 
 
+# Prevent accidental sending of emails
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
 # Set your MEDIA_ROOT to a directory that does not already exist.
 MEDIA_ROOT = path('files')
