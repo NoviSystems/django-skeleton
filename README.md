@@ -172,6 +172,9 @@ migrate
     enviornment config. The backslashes escape the dollar signs for bash; 
     remove them if you're copy-pasting the config into the file instead of 
     pasting bash commands.
+    
+    Also make sure to add any additional static directories such as your 
+    media files, if that applies to your project.
 * `nginx -t` to make sure the config passes syntax validation
 * `./manage.py collectstatic`
 * `systemctl enable nginx && systemctl start nginx`
