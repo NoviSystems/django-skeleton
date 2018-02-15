@@ -323,7 +323,7 @@ set -e -x
 
 ./manage.py bundle --tar -o - | ssh $REMOTE sudo tar xC /opt/$DEPLOYMENT
 ssh $REMOTE sudo /opt/$DEPLOYMENT/env/bin/python /opt/$DEPLOYMENT/manage.py collectstatic
-ssh $REMOTE sudo /opt/$DEPLOYMENT/env/bin/python /opt/$DEPLOYMENT/manage.py migrate
-ssh $REMOTE sudo /opt/$DEPLOYMENT/env/bin/python /opt/$DEPLOYMENT/manage.py clearsessions
+ssh $REMOTE sudo -u $DEPLOYMENT /opt/$DEPLOYMENT/env/bin/python /opt/$DEPLOYMENT/manage.py migrate
+ssh $REMOTE sudo -u $DEPLOYMENT /opt/$DEPLOYMENT/env/bin/python /opt/$DEPLOYMENT/manage.py clearsessions
 ssh $REMOTE sudo supervisorctl restart $DEPLOYMENT
 ```
