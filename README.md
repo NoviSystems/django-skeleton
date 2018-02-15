@@ -321,9 +321,17 @@ REMOTE=remote-machine.example.com
 
 set -e -x
 
+# Copy the code
 ./manage.py bundle --tar -o - | ssh $REMOTE sudo tar xC /opt/$DEPLOYMENT
+# Install any new requirements
+ssh $REMOTE sudo /opt/$DEPLOYMENT/env/bin/pip install -r /opt/$DEPLOYMENT/requirements.txt
+# Collect any new static files
 ssh $REMOTE sudo /opt/$DEPLOYMENT/env/bin/python /opt/$DEPLOYMENT/manage.py collectstatic
+# Apply any new database migrations
 ssh $REMOTE sudo -u $DEPLOYMENT /opt/$DEPLOYMENT/env/bin/python /opt/$DEPLOYMENT/manage.py migrate
+# Clear out any old sessions (good to do this once in a while, but not
+# necessary)
 ssh $REMOTE sudo -u $DEPLOYMENT /opt/$DEPLOYMENT/env/bin/python /opt/$DEPLOYMENT/manage.py clearsessions
+# Restart the gunicorn server
 ssh $REMOTE sudo supervisorctl restart $DEPLOYMENT
 ```
