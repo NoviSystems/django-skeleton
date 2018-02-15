@@ -29,7 +29,7 @@ SECURE_SSL_REDIRECT = False
 # Finally, run "manage.py collectstatic" and django will copy static files
 # from various places into your STATIC_ROOT. You need to re-run collectstatic
 # each time you redeploy with changes to static files.
-STATIC_ROOT = path('static-root')
+STATIC_ROOT = path(env.str("STATIC_ROOT"))
 
 # manifest storage is useful for its automatic cache busting properties
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
@@ -37,4 +37,4 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesSto
 
 # Set your MEDIA_ROOT to some directory that's writable by your web server if
 # your app involves writing to the filesystem using the default storage class
-MEDIA_ROOT = path('media-root')
+MEDIA_ROOT = path(env("MEDIA_ROOT"))

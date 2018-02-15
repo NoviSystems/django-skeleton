@@ -26,3 +26,12 @@ DATABASE_URL="sqlite:///db.sqlite3"
 
 # Adds sentry error reporting. See common_settings for details.
 #SENTRY_DSN=""
+
+# Not used in development, but in deployment this is where static files are
+# collected to. You also need to configure your web browser to serve them from
+# /static/
+STATIC_ROOT=static-root
+
+# If your app uses the default storage class for file uploads, they will get
+# saved to this directory
+MEDIA_ROOT=media-root

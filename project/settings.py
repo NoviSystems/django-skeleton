@@ -14,5 +14,4 @@ from .common_settings import *
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
-# Set your MEDIA_ROOT to a directory that does not already exist.
-MEDIA_ROOT = path('files')
+MEDIA_ROOT = path(env("MEDIA_ROOT"))
