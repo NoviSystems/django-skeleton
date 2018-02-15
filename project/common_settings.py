@@ -30,7 +30,6 @@ def path(value):
 env = environ.Env(
     DEBUG=(bool, False),
     SECRET_KEY=str,
-    HOST_NAME=str,
     GOOGLE_ANALYTICS_KEY=(str, ''),
     GOOGLE_OPENIDCONNECT_KEY=(str, ''),
     GOOGLE_OPENIDCONNECT_SECRET=(str, ''),
@@ -64,7 +63,7 @@ SECRET_KEY = env('SECRET_KEY')
 # With DEBUG off, Django checks that the Host header in requests matches one of
 # these. If you turn off DEBUG and you're suddenly getting HTTP 400 Bad
 # Request responses, you need to add the host names to this list
-ALLOWED_HOSTS = [env('HOST_NAME'), ]
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 

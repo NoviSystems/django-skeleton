@@ -6,16 +6,23 @@
 # production
 DJANGO_SETTINGS_MODULE=project.settings
 
+# Set DEBUG to false for production deployments
 DEBUG=true
+
+# Set a secret key for production deployments
 SECRET_KEY="not-so-secret"
 
-HOST_NAME="*"
+# This is a comma separated list of allowed hosts. It applies if debug is false
+ALLOWED_HOSTS="*"
 
 DATABASE_URL="sqlite:///db.sqlite3"
 
-# GOOGLE_ANALYTICS_KEY=""
+# Adds google analytics to each page
+#GOOGLE_ANALYTICS_KEY=""
 
-# GOOGLE_OPENIDCONNECT_KEY=""
-# GOOGLE_OPENIDCONNECT_SECRET=""
+# Use for oauth
+#GOOGLE_OPENIDCONNECT_KEY=""
+#GOOGLE_OPENIDCONNECT_SECRET=""
 
-# SENTRY_DSN=""
+# Adds sentry error reporting. See common_settings for details.
+#SENTRY_DSN=""
