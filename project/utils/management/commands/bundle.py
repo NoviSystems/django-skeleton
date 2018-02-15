@@ -28,6 +28,10 @@ class Command(BaseCommand):
             help='Specifies file to which the output is written.'
         )
         parser.add_argument(
+            '-t', '--tar', default=False, dest='tar', action="store_true",
+            help="Write output as a tar file",
+        )
+        parser.add_argument(
             '-r', '--git-reference', default='master', dest='ref',
             help='Git reference to bundle, e.g. a branch or commit hash.',
         )
@@ -44,24 +48,24 @@ class Command(BaseCommand):
 
     @contextmanager
     def step(self, msg='', success='done', failure='fail'):
-        self.stdout.write('  - %s ' % (msg,), ending='')
+        self.stderr.write('  - %s ' % (msg,), ending='')
         try:
             yield
         except Exception:
-            self.stdout.write(self.style.ERROR(failure))
+            self.stderr.write(self.style.ERROR(failure))
             raise
         except StepFail as e:
-            self.stdout.write(self.style.ERROR(str(e)))
+            self.stderr.write(self.style.ERROR(str(e)))
             sys.exit(1)
-        self.stdout.write(self.style.SUCCESS(success))
+        self.stderr.write(self.style.SUCCESS(success))
 
     def stream(self, args, cwd=None, check=True):
         """
         Stream the output of the subprocess
         """
-        sys.stdout.write("\x1b7")  # Save cursor pos
-        sys.stdout.write("\x1b[?1047h")  # Set alternate screen
-        sys.stdout.flush()
+        sys.stderr.write("\x1b7")  # Save cursor pos
+        sys.stderr.write("\x1b[?1047h")  # Set alternate screen
+        sys.stderr.flush()
         try:
             process = Popen(args, cwd=cwd)
             process.wait()
@@ -69,18 +73,26 @@ class Command(BaseCommand):
             if check and process.returncode != 0:
                 raise CalledProcessError(process.returncode, args)
         finally:
-            sys.stdout.write("\x1b[?1047l")  # Reset to regular screen
-            sys.stdout.write("\x1b8")  # Restore cursor pos
-            sys.stdout.flush()
+            sys.stderr.write("\x1b[?1047l")  # Reset to regular screen
+            sys.stderr.write("\x1b8")  # Restore cursor pos
+            sys.stderr.flush()
 
     def handle(self, *args, **options):
         ref = options['ref']
         ts = now().strftime(DATETIME_FORMAT)
         path = 'bundles/build-%(ref)s-%(ts)s' % locals()
-        out = options['output'] or (path + '.zip')
+        out = options['output']
+        if not out:
+            if options['tar']:
+                out = path + '.tar'
+            else:
+                out = path + '.zip'
+        if out != "-":
+            # Both zip and tar accept `-` to mean standard out
+            out = os.path.abspath(out)
 
         msg = 'Creating application bundle for: %s' % ref
-        self.stdout.write(self.style.MIGRATE_HEADING(msg))
+        self.stderr.write(self.style.MIGRATE_HEADING(msg))
 
         # copy the project to archive directory
         with self.step('Creating build directory at {} ...'.format(path)):
@@ -105,12 +117,15 @@ class Command(BaseCommand):
                                    "the repository.\nOriginal "
                                    "exception was: {}".format(e)) from e
         else:
-            self.stdout.write('  - No \'package.json\' found. Skipping javascript build.')
+            self.stderr.write('  - No \'package.json\' found. Skipping javascript build.')
 
         # Create zip archive
         with self.step('Writing bundle...'):
-            self.stream(['zip', '-r', os.path.abspath(out), '.'], cwd=path)
-        self.stdout.write('')
+            if options['tar']:
+                self.stream(['tar', 'cvf', out, '.'], cwd=path)
+            else:
+                self.stream(['zip', '-r', out, '.'], cwd=path)
+        self.stderr.write('')
 
         if os.path.exists('.elasticbeanstalk/config.yml'):
             with self.step('Updating eb config...'):
@@ -119,9 +134,9 @@ class Command(BaseCommand):
                 with open('.elasticbeanstalk/config.yml', 'w') as config:
                     config.write(re.sub(r'bundles/.*.zip', out, text))
 
-        # write paths to stdout
+        # write paths to stderr
         if not out.startswith(path):
-            self.stdout.write('Build directory:')
-            self.stdout.write(self.style.NOTICE('  %s' % path))
-        self.stdout.write('Bundle path:')
-        self.stdout.write(self.style.NOTICE('  %s' % out))
+            self.stderr.write('Build directory:')
+            self.stderr.write(self.style.NOTICE('  %s' % path))
+        self.stderr.write('Bundle path:')
+        self.stderr.write(self.style.NOTICE('  %s' % out))
