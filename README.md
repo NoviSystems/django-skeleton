@@ -326,7 +326,7 @@ set -e -x
 # Install any new requirements
 ssh $REMOTE sudo /opt/$DEPLOYMENT/env/bin/pip install -r /opt/$DEPLOYMENT/requirements.txt
 # Collect any new static files
-ssh $REMOTE sudo /opt/$DEPLOYMENT/env/bin/python /opt/$DEPLOYMENT/manage.py collectstatic
+ssh $REMOTE sudo /opt/$DEPLOYMENT/env/bin/python /opt/$DEPLOYMENT/manage.py collectstatic --noinput
 # Apply any new database migrations
 ssh $REMOTE sudo -u $DEPLOYMENT /opt/$DEPLOYMENT/env/bin/python /opt/$DEPLOYMENT/manage.py migrate
 # Clear out any old sessions (good to do this once in a while, but not
