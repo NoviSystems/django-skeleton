@@ -1,177 +1,196 @@
 # Django Skeleton
 
-for Django 1.11. Should work with either Python 3.5+ or 2.7 (3.5 is preferred)
+Designed to work with Django 1.11 on Python 3.4.
 
-## Features
-Adds the following on top of Django's startproject template
+## Starting a New Project
+Starting a new project and want to use this Skeleton? Follow these steps.
 
-* A set of starter html templates using bootstrap and jquery.
-
-  * `base.html` is a minimal bootstrap template. It also shows any pending Django
-    messages from the messages framework, and shows the currently logged-in
-    user, and a link to logout.
-  * `login.html` has a minimal login form
-  * `logout.html` has a logout message and a link to log in again
-  * `password_change.html` has a minimal password change form
-  * `password_change_done.html` has a success message and a link to the
-    'home' view
-
-* A settings file split into a `common_settings.py` and `settings.py` with a 
-  separate production settings
-* Pulls in most deployment-specific settings from the environment using 
-  Django-environ
-* Settings configured for a top-level static files directory
-* Settings configured for a top-level templates directory
-* Settings configured with a good default logging configuration
-* A starter `.gitignore`
-* A starter `requirements.txt`
-* Defined urls for django built-in authentication views (login,
-  logout, and password change) and settings configured to use them
-  (`LOGIN_URL`, `LOGOUT_URL`, and `LOGIN_REDIRECT_URL`).
-* An oauth app built with oauth2client, for SSO login support
-* A deployment script for bundling other dependencies such as static 
-  files and javascript bundles
-* Sentry support
-* Google Analytics support
-
-## Getting Started
-The bare minimum to get a working project is:
-
-1. Create a virtual environment and install the requirements listed in
-   `requirements.txt`
-
-   * In this directory, run `python3 -m venv env` to create the virtual 
-   environment.
-   * Now run `env/bin/pip install -r requirements.txt`
-   * For convenience in later commands, activate your virtualenv for this
-     terminal with `source ./env/bin/activate`. You can replace
-     `./env/bin/python` with just `python` in subsequent commands in an
-     activated environment.
-
-2. Unless you want an app named "appname", change the app name in the following
-   places:
+1. Copy the contents of the skeleton to your new project directry.
+2. Change the app name from the placeholder "appname" to a name of your 
+choosing in the following places:
 
    * The app directory name itself
    * In `common_settings.py` the INSTALLED_APPS setting
    * The import statement in the project-wide `urls.py`
+   
+3. Run `git init` and make your initial commit
+4. Set up git remotes and push the initial commit to a remote repository
+5. Continue to the next step for Setting up your Development Enviroment
+6. Delete this section from the readme, as it's only relevant to the skeleton!
+   
+## Setting up your Development Environment
+
+1. Clone the project to a local directory (or if coming from the previous 
+section, skip this step)
+2. CD into your project directory
+3. Create a virtual environment and install the requirements listed in
+   `requirements.txt`
+
+   * In this directory, run `python3.4 -m venv env` to create the virtual 
+   environment.
+   * activate your virtualenv for this terminal with `source 
+   ./env/bin/activate`.
+   * Now run `pip install -r requirements.txt`
 
 3. From the base directory, copy `project/develop/env` to `.env`. No
    changes are needed for development. See the README in the `project`
-   directory for more information.
+   directory for more information on how environment files work and how our 
+   settings are organized.
 
 4. Create your database and initial schemas with
-   `./env/bin/python manage.py migrate`. The default database is a
+   `./manage.py migrate`. The default database is a
    sqlite-based file in the base directory of your project.
 
 5. You now have a working development environment. Run the django test server
-   with `./env/bin/python manage.py runserver`
-
-# Deployment Guide for Production
-
-Our usual setup is to use Nginx, Gunicorn, and Supervisor on production
-deployments. For this example we assume you are deploying your code to
-/opt/my-deployment-dir
-
-1. Clone a copy of your code to /opt/my-deployment-dir. This should put your
-   manage.py at /opt/my-deployment-dir/manage.py.
+   with `./manage.py runserver`
    
-   TODO: update this step with instructions involving the use of the deploy bundling scripts.
-   
-1. Install Nginx and supervisor system-wide
-2. Create a Python virtualenv and install your project’s dependencies +
-   gunicorn into it. For this example the base dir is /opt/my-deployment-dir and
-   the virtualenv is /opt/my-deployment-dir/env
-3. Create a user and group for your code to run as. For this example we use
-   project-user and project-group
-4. Create a supervisor config in /etc/supervisord.d/myproject.ini containing:
+# All-New, All-Purpose Deployment Guide
+This section has been completely re-written with tried-and-tested steps. It 
+has everything you need to do to deploy onto a fresh CentOS7 install using 
+Postgresql as the database. Most commands are now copy-and-paste bash friendly!
 
-   ```
-   [program:myproject]
-   directory = /opt/my-deployment-dir
-   command = /opt/my-deployment-dir/env/bin/gunicorn --pythonpath /opt/my-deployment-dir/ --bind=unix:/opt/my-deployment-dir/gunicorn.sock --timeout 120 project.wsgi
-   stdout_logfile = /opt/my-deployment-dir/stdout.log
-   redirect_stderr = true
-   autostart = true
-   autorestart = true
-   user = project-user
-   group = project-group
-   ```
-   Note: for production deployments you may want to add e.g. `-w 4` to the
-   gunicorn command to spawn multiple workers.
+All these commands should be run as root, except where indicated by `sudo -u`
 
-5. Create an nginx config in /etc/nginx/conf.d/myproject.conf (but see below 
-if you want an SSL version):
+* Do a full system update and reboot
+    ```bash
+    yum update
+    shutdown -r now
+    ```
+* `yum install https://centos7.iuscommunity.org/ius-release.rpm`
+* `yum install python34u`
+* Choose a name for your deployment, usually chosen after the project name. 
+This is used in many of the commands below. If you're copy-pasting into bash,
+then bash will do the substitution for you.
+    ```
+    export DEPLOYMENT=deployment
+    ```
+* `useradd $DEPLOYMENT`
+* `yum install https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-centos96-9.6-3.noarch.rpm`
+* `yum install postgresql96 postgresql96-server postgresql96-devel`
+* `/usr/pgsql-9.6/bin/postgresql96-setup initdb`
+* `systemctl enable postgresql-9.6 && systemctl start postgresql-9.6`
+* `sudo -u postgres createuser $DEPLOYMENT`
+* `sudo -u postgres createdb -O $DEPLOYMENT $DEPLOYMENT`
+* Extract the code bundle to `/opt/$DEPLOYMENT`. It should be owned by the 
+root user or some user other than the deployment user. The deployment user is 
+used to run it and good security practice is to not let your code have write 
+permission to itself.
 
-   ```
-   upstream gunicorn {
-       server unix:/opt/my-deployment-dir/gunicorn.sock fail_timeout=0;
-   }
+    Hint: run a command like this from your local development machine for a 
+    clean one-liner that copies the code over. Note you have to create the 
+    directory first.
+    
+    ```bash
+    ./manage.py bundle --tar -o - | ssh remote-machine.example.com sudo tar xC /opt/$DEPLOYMENT
+    
+    ```
+    
+    See below in the section on Delpoying Changes for a convenient script 
+    that re-deploys changes to an existing deployment.
+  
+* back on the server, CD into the deployment directory
 
-   server {
-       listen 80;
-       server_name my-hostname.example.com;
+    `cd /opt/$DEPLOYMENT`
+* `/usr/bin/python3.4 -m venv env`
+* `source env/bin/activate`
+* `pip install -r requirements.txt gunicorn psycopg2`
+* `yum install supervisor`
+* Set up environment var file. `cp project/develop/env .env` and then edit `.env`
+  * Set DJANGO_SETTINGS_MODULE to `project.deploy.settings`
+  * Set DEBUG to false
+  * Set a SECRET_KEY
+  * Set the allowed hosts
+  * Set DATABASE_URL to `postgres:///$DEPLOYMENT` (must explicitly set the 
+  database name, but the username and host are implicit)
+  * Any other settings as appropriate for your deployment
+* If you need postgres extensions loaded, do that manually now before you 
+migrate
+    ```bash
+    yum install postgresql96-contrib
+    sudo -u postgres psql $DEPLOYMENT
+    ```
+    ```postgresql
+    CREATE EXTENSION citext;
+    ```
+* Migrate the database to make sure db access is working
 
-       location /static/ {
-           alias /opt/my-deployment-dir/static-root/;
-       }
-       location / {
-           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-           proxy_set_header X-Forwarded-Proto $scheme;
-           proxy_set_header Host $http_host;
-           proxy_redirect off;
-           proxy_pass http://gunicorn;
-           client_max_body_size 100m;
-           proxy_read_timeout 300;
-       }
-   }
-   ```
+    ```bash
+    sudo -u $DEPLOYMENT env/bin/python ./manage.py migrate
+    ```
+* Add a run directory for the gunicorn socket. Make it writable by your 
+  deployment user. I usually use `./lib`
+  ```bash
+  mkdir /opt/$DEPLOYMENT/lib && chown $DEPLOYMENT:DEPLOYMENT /opt/$DEPLOYMENT/lib
+  ```
+* Make and chown any other directories your deployment needs to write to 
+  (such as a media root)
+* Create supervisor config using this template
+    ```bash
+    cat > /etc/supervisord.d/$DEPLOYMENT.ini <<- EOF
+    [program:$DEPLOYMENT]
+    directory = /opt/$DEPLOYMENT
+    command = /opt/$DEPLOYMENT/env/bin/gunicorn --pythonpath /opt/$DEPLOYMENT --bind=unix:/opt/$DEPLOYMENT/run/gunicorn.sock -w 4 --timeout 300 project.wsgi
+    stdout_logfile = /opt/$DEPLOYMENT/run/gunicorn.log
+    redirect_stderr = true
+    autostart = true
+    autorestart = true
+    user = $DEPLOYMENT
+    group = $DEPLOYMENT
+    EOF
+    ```
+* `systemctl enable supervisord && systemctl start supervisord`
+* Check `supervisorctl status` to see if things worked okay
+* `yum install nginx`
+* Create nginx config
+    ```bash
+    cat > /etc/nginx/conf.d/$DEPLOYMENT.conf <<- EOF
+    upstream gunicorn {
+        server unix:/opt/$DEPLOYMENT/run/gunicorn.sock fail_timeout=0;
+    }
 
-   Note: You must include the X-Forwarded-Proto line even if not using ssl,
-   because gunicorn interprets this header by default, and indicates via
-   enviornment variables to Django. So this must be set to make sure clients
-   can't fake Django into thinking a request is secure.
+    server {
+        listen 80;
+        server_name $DEPLOYMENT.example.com;
 
-   Note: it is sometimes a good idea to put the socket file in e.g.
-   /opt/my-deployment-dir/run if you want to have the server run as a
-   different user than the user that owns /opt/my-deployment-dir. Then only
-   that one directory needs to be writable by the linux user that runs the
-   server process.
+        location /static/ {
+            alias /opt/$DEPLOYMENT/static-root/;
+        }
 
-   Note: If running selinux, nginx won't be able to read the socket file. You
-   can give nginx read-write permissions to all files in a directory with
-   these commands:
+        location / {
+            client_max_body_size 100m;
+            proxy_read_timeout 300;
+            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto \$scheme;
+            proxy_set_header Host \$http_host;
+            proxy_redirect off;
+        proxy_pass http://gunicorn;
+      }
+    }
+    EOF
+    ```
+    Change the server_name as appropriate to match your ALLOWED_HOSTS in the 
+    enviornment config. The backslashes escape the dollar signs for bash; 
+    remove them if you're copy-pasting the config into the file instead of 
+    pasting bash commands.
+* `nginx -t` to make sure the config passes syntax validation
+* `./manage.py collectstatic`
+* `systemctl enable nginx && systemctl start nginx`
 
-   ```
-   # yum install policycoreutils-python
-   # semanage fcontext -a -t httpd_sys_rw_content_t "/opt/my-deployment-dir/run(/.*)?"
-   # restorecon -vR /opt/my-deployment-dir/run
-   ```
-   [Read more about the different context types that RedHat/CentOS uses with web servers](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html-single/Managing_Confined_Services/#sect-Managing_Confined_Services-The_Apache_HTTP_Server-Types)
+## Deployment Troubleshooting
 
-6. Copy the example env file to .env and configure:
+If you run into weird permission problems, check your system logs for SELinux
+errors. If SELinux denies nginx permission to read the gunicorn socket file, 
+you can give nginx read-write permissions to all files in a directory with 
+these commands:
 
-   * Set the settings module to the production settings: 
-   `DJANGO_SETTINGS_MODULE=project.deploy.settings`
-   * If your project uses a local static directory, set STATIC_ROOT
-   to /opt/my-deployment-dir/static-root and run 
-   `manage.py collectstatic`. If the project is using an alternate
-   storage engine such as S3, configure that instead and
-   then run collectstatic. (See the project/deploy/settings.py
-   for the env variables your project expects)
-   * If your project uses a media root, set MEDIA_ROOT to a directory
-   that's writable by the web server.
-   * Configure the database parameters and run `manage.py migrate`
-   * If this is a production deployment, set DEBUG to false and set the
-   ALLOWED_HOSTS list to the hostnames you're serving, e.g. "my-hostname.example.com"
+```bash
+yum install policycoreutils-python
+semanage fcontext -a -t httpd_sys_rw_content_t "/opt/$DEPLOYMENT/run(/.*)?"
+restorecon -vR /opt/$DEPLOYMENT/run
+```
+[Read more about the different context types that RedHat/CentOS uses with web servers](https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html-single/Managing_Confined_Services/#sect-Managing_Confined_Services-The_Apache_HTTP_Server-Types)
 
-7. sudo systemctl restart supervisord
-8. `sudo supervisorctl status` to make sure the workers started okay.
-9. test nginx config with "sudo nginx -t"
-10. restart nginx with "sudo nginx -s reload"
-11. sudo systemctl enable nginx
-12. sudo systemctl enable supervisord
-
-### SSL Setup
+# SSL Setup
 
 To get LetsEncrypt running on the Nginx instance you just set up, follow
 these steps
@@ -181,8 +200,7 @@ and <https://certbot.eff.org/#centosrhel7-nginx>)
 
 1. `yum install certbot` (assumes CentOS7 and epel repos installed)
 2. Create a directory somewhere on the filesystem such as /opt/webroot
-3. If you have an existing non-ssl configuration, add a new location block to 
-your nginx config that looks like this:
+3. Add a new location block to your nginx config that looks like this:
 
    ```
    location ~ /.well-known {
@@ -191,95 +209,59 @@ your nginx config that looks like this:
    ```
    and reload nginx with `nginx -s reload`
    
-   This will let certbot use the web server to perform the domain validation 
-   in the next step. You can use whatever webroot path you want.
-
 3. Run `certbot certonly`
 
    This will ask you for your domain name and web root. If successful, it
-   will go ahead and issue you your cert. If you don't have an existing 
-   non-ssl deployment (starting from scratch) then choose certbot's "spin up 
-   a temporary web server" option for this step.
+   will go ahead and issue you your cert.
+   
+   If your deployment is not yet serving users, and nginx isn't yet running, 
+   then choose certbot's "spin up a temporary web server" option for this step.
 
 4. Generate strong dh parameters with
 
    ```openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048```
 
-5. Modify your nginx config. This is the SSL template for a new deployment:
+5. Modify your nginx config. Add this block for port 80
 
     ```
-    upstream gunicorn {
-        server unix:/opt/my-deployment-dir/gunicorn.sock fail_timeout=0;
-    }
-    
     server {
          listen 80;
          server_name my-hostname.example.com;
          return 301 https://$server_name$request_uri;
     }
-
-    server {
-        listen 443 ssl;
-        server_name my-hostname.example.com;
-        
-        ssl_certificate /etc/letsencrypt/live/my-hostname.example.com/fullchain.pem;
-        ssl_certificate_key /etc/letsencrypt/live/my-hostname.example.com/privkey.pem;
-        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-        ssl_prefer_server_ciphers on;
-        ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
-        ssl_ecdh_curve secp384r1;
-        ssl_session_cache shared:SSL:10m;
-        ssl_session_tickets off;
-        ssl_stapling on;
-        ssl_stapling_verify on;
-        add_header Strict-Transport-Security "max-age=6307200; includeSubdomains";
-        add_header X-Frame-Options DENY;
-        add_header X-Content-Type-Options nostiff;
-        ssl_dhparam /etc/ssl/certs/dhparam.pem;
-
-        location /static/ {
-            alias /opt/my-deployment-dir/static-root/;
-        }
-        location ~ /.well-known {
-            root /opt/webroot;
-        }
-        location / {
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_set_header Host $http_host;
-            proxy_redirect off;
-            proxy_pass http://gunicorn;
-            client_max_body_size 100m;
-            proxy_read_timeout 300;
-        }
-    }
     ```
-
-    This makes the following changes from the non-SSL config from above:
-    * Adds a new server block for port 80 that redirects to the https version
-    * Changes the old block to listen on 443 using ssl
-    * Adds a block of SSL configuration.
+    
+    And change your existing block's listen line to `listen 443 ssl;` and add
+    these new lines to it:
+    
+    ```
+    ssl_certificate /etc/letsencrypt/live/my-hostname.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/my-hostname.example.com/privkey.pem;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+    ssl_ecdh_curve secp384r1;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_tickets off;
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    add_header Strict-Transport-Security "max-age=6307200; includeSubdomains";
+    add_header X-Frame-Options DENY;
+    add_header X-Content-Type-Options nostiff;
+    ssl_dhparam /etc/ssl/certs/dhparam.pem;
+    ```
     
     Make sure to change the hostname in the `server_name` directives and in 
     the certificate paths. Also the web root for the well-known path if you 
-    changed it.
+    used a different one.
 
    Now test and reload your nginx config
 
    ```
-   # nginx -t
-   # nginx -s reload
+   nginx -t && nginx -s reload
    ```
 
-6. Add this configuration option to your settings.py (not necessary if
-   running under gunicorn; gunicorn looks for this header by
-   default if nginx connects from localhost, and indicates to Django whether
-   the connection is secure via wsgi environ variables, which Django trusts
-   by default)
-
-   ```SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')```
-
-7. Configure certbot to renew certificates automatically:
+6. Configure certbot to renew certificates automatically:
 
    run `certbot renew --dry-run` to make sure everything looks okay. If you 
    initially had certbot spin up a temporary web server, you may need to 
@@ -331,4 +313,17 @@ include the sentry DSN in the env file.
 
 ## Deploying Changes
 
-TODO: update this section with new deployment script instructions.
+A simple script like this one can deploy changes in one shot:
+
+```bash
+DEPLOYMENT=deployment
+REMOTE=remote-machine.example.com
+
+set -e -x
+
+./manage.py bundle --tar -o - | ssh $REMOTE sudo tar xC /opt/$DEPLOYMENT
+ssh $REMOTE sudo /opt/$DEPLOYMENT/env/bin/python /opt/$DEPLOYMENT/manage.py collectstatic
+ssh $REMOTE sudo /opt/$DEPLOYMENT/env/bin/python /opt/$DEPLOYMENT/manage.py migrate
+ssh $REMOTE sudo /opt/$DEPLOYMENT/env/bin/python /opt/$DEPLOYMENT/manage.py clearsessions
+ssh $REMOTE sudo supervisorctl restart $DEPLOYMENT
+```
