@@ -120,9 +120,9 @@ migrate
     sudo -u $DEPLOYMENT env/bin/python ./manage.py migrate
     ```
 * Add a run directory for the gunicorn socket. Make it writable by your 
-  deployment user. I usually use `./lib`
+  deployment user. I usually use `./run`
   ```bash
-  mkdir /opt/$DEPLOYMENT/lib && chown $DEPLOYMENT:DEPLOYMENT /opt/$DEPLOYMENT/lib
+  mkdir /opt/$DEPLOYMENT/run && chown $DEPLOYMENT:DEPLOYMENT /opt/$DEPLOYMENT/run
   ```
 * Make and chown any other directories your deployment needs to write to 
   (such as a media root)
