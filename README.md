@@ -81,6 +81,8 @@ permission to itself.
     directory first.
     
     ```bash
+    # On your local machine:
+    export DEPLOYMENT=deployment
     ./manage.py bundle --tar -o - | ssh remote-machine.example.com sudo tar xC /opt/$DEPLOYMENT
     
     ```
