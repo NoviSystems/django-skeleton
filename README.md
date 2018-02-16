@@ -61,7 +61,7 @@ All these commands should be run as root, except where indicated by `sudo -u`
 * Choose a name for your deployment, usually chosen after the project name. 
 This is used in many of the commands below. If you're copy-pasting into bash,
 then bash will do the substitution for you.
-    ```
+    ```bash
     export DEPLOYMENT=deployment
     ```
 * `useradd $DEPLOYMENT`
