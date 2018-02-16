@@ -231,7 +231,7 @@ and <https://certbot.eff.org/#centosrhel7-nginx>)
     ```
     server {
          listen 80;
-         server_name my-hostname.example.com;
+         server_name deployment.example.com;
          return 301 https://$server_name$request_uri;
     }
     ```
@@ -240,8 +240,8 @@ and <https://certbot.eff.org/#centosrhel7-nginx>)
     these new lines to it:
     
     ```
-    ssl_certificate /etc/letsencrypt/live/my-hostname.example.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/my-hostname.example.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/deployment.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/deployment.example.com/privkey.pem;
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
     ssl_prefer_server_ciphers on;
     ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
@@ -257,8 +257,7 @@ and <https://certbot.eff.org/#centosrhel7-nginx>)
     ```
     
     Make sure to change the hostname in the `server_name` directives and in 
-    the certificate paths. Also the web root for the well-known path if you 
-    used a different one.
+    the certificate paths.
 
    Now test and reload your nginx config
 
