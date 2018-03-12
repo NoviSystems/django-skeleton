@@ -320,10 +320,13 @@ LOGGING = {
             #
             # * Django enables this behavior by calling
             #   https://docs.python.org/3.5/library/logging.html#logging.captureWarnings
-        }
+        },
+        "appname": {
+            "level": "DEBUG" if DEBUG else "INFO",
+        },
     },
     "root": {
         "handlers": ["stderr"],
-        "level": "DEBUG" if DEBUG else "INFO",
-    }
+        "level": "WARNING",
+    },
 }
