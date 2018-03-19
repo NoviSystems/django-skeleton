@@ -175,6 +175,10 @@ migrate
     remove them if you're copy-pasting the config into the file instead of 
     pasting bash commands.
     
+    Also, if this host is itself behind another Nginx reverse proxy that
+    does SSL termination, remove the X-Forwarded-Proto header line and
+    make sure the upstream proxy adds it.
+    
     Also make sure to add any additional static directories such as your 
     media files, if that applies to your project.
 * `nginx -t` to make sure the config passes syntax validation
