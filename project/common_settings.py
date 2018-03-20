@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.forms',
 
     'project.utils',
     'appname',
@@ -93,6 +94,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'project.urls'
+
+WSGI_APPLICATION = 'project.wsgi.application'
 
 TEMPLATES = [
     {
@@ -112,7 +115,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'project.wsgi.application'
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
 
 # Database

@@ -1,3 +1,4 @@
+{% load forms %}
 
 {% if form.non_field_errors %}
 <div class="text-danger">
@@ -6,5 +7,5 @@
 {% endif %}
 
 {% for field in form %}
-{% include 'forms/fields/block.html' with field=field %}
+{% include field|template with field=field %}
 {% endfor %}

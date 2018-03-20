@@ -3,7 +3,7 @@
 {% block content %}
 <div class="row">
     <div class="col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
-        <form role="form" class="form-horizontal" action="{% url 'login' %}{% if next %}?next={{ next }}{% endif %}" method="POST">
+        <form class="form-horizontal" role="form" action="{% url 'login' %}{% if next %}?next={{ next }}{% endif %}" method="POST">
             {% csrf_token %}
             <div class="panel panel-primary">
 
@@ -12,19 +12,7 @@
                 </div>
 
                 <div class="panel-body">
-                    {% include 'forms/fields/inline.html' with field=form.username sizes='sm-8 lg-9' %}
-                    {% include 'forms/fields/inline.html' with field=form.password sizes='sm-8 lg-9' %}
-
-                    <!-- other errors -->
-                    {% if form.non_field_errors %}
-                    <div class='form-group'>
-                        <div class="col-sm-8 col-lg-9 col-sm-offset-4 col-lg-offset-3">
-                            {% for error in form.non_field_errors %}
-                            <p class="text-danger">{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    {% endif %}
+                    {{ form }}
                 </div>
 
                 <div class="panel-footer">
