@@ -32,8 +32,8 @@ class Command(BaseCommand):
             help="Write output as a tar file",
         )
         parser.add_argument(
-            '-r', '--git-reference', default='master', dest='ref',
-            help='Git reference to bundle, e.g. a branch or commit hash.',
+            'branch',
+            help='Git ref to bundle, e.g. a branch or commit hash.',
         )
 
     def __init__(self, *args, **kwargs):
@@ -78,7 +78,7 @@ class Command(BaseCommand):
             sys.stderr.flush()
 
     def handle(self, *args, **options):
-        ref = options['ref']
+        ref = options['branch']
         ts = now().strftime(DATETIME_FORMAT)
         path = 'bundles/build-%(ref)s-%(ts)s' % locals()
         out = options['output']
