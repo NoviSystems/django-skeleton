@@ -11,6 +11,7 @@ choosing in the following places:
 
    * The app directory name itself
    * In `common_settings.py` the INSTALLED_APPS setting
+   * In `common_settings.py` the LOGGING setting
    * The import statement in the project-wide `urls.py`
    
 3. Run `git init` and make your initial commit
