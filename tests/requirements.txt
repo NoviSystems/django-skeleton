@@ -1,0 +1,4 @@
+selenium
+factory-boy
+fake-factory
+redislite

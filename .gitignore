@@ -1,6 +1,8 @@
 # Application
+node_modules/
 bundles/
 *.sqlite3
+*.redis
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
