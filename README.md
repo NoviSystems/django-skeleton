@@ -1,6 +1,8 @@
 # Django Skeleton
 
-Designed to work with Django 1.11 on Python 3.4.
+[![Build Status](https://travis-ci.org/ITNG/django-skeleton.svg?branch=master)](https://travis-ci.org/ITNG/django-skeleton)
+
+Designed to work with Django 1.11 on Python 3.6.
 
 ## Starting a New Project
 Starting a new project and want to use this Skeleton? Follow these steps.
