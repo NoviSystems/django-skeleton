@@ -1,22 +1,22 @@
 from django.contrib.auth import forms as auth_forms
 from django.contrib.auth import views as auth_views
 
-from template_forms import bs3
+from .utils import forms
 
 
-class AuthenticationForm(bs3.BlockForm, auth_forms.AuthenticationForm):
-    form_template_name = 'registration/auth/forms/login.html'
+class AuthenticationForm(forms.HorizontalForm, auth_forms.AuthenticationForm):
+    template_name = 'registration/auth/forms/login.html'
 
 
-class PasswordChangeForm(bs3.BlockForm, auth_forms.PasswordChangeForm):
+class PasswordChangeForm(forms.BlockForm, auth_forms.PasswordChangeForm):
     pass
 
 
-class PasswordResetForm(bs3.BlockForm, auth_forms.PasswordResetForm):
+class PasswordResetForm(forms.BlockForm, auth_forms.PasswordResetForm):
     pass
 
 
-class SetPasswordForm(bs3.BlockForm, auth_forms.SetPasswordForm):
+class SetPasswordForm(forms.BlockForm, auth_forms.SetPasswordForm):
     pass
 
 

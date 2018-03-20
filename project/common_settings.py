@@ -79,7 +79,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.forms',
-    'template_forms',
 
     'project.utils',
     'appname',

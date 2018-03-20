@@ -1,11 +1,11 @@
 {% load utils %}
-{% load bs3 %}
+{% load forms %}
 
 <div class="form-group{% if field.errors %} has-error{% endif %}">
     <label class="control-label {{ field|required }} {{ sizes|default:'md-9 sm-7'|inversecols }}" for="{{ field.auto_id }}">{{ field.label }}</label>
 
     <div class="{{ sizes|default:'md-9 sm-7'|cols }}">
-        {{ field|addclass:"form-control"  }}
+        {{ field  }}
         {% if field.help_text %}<span class="help-block">{{ field.help_text|safe }}</span>{% endif %}
         {% for error in field.errors %}<span class="help-block">{{ error }}</span>{% endfor %}
     </div>

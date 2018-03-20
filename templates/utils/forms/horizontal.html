@@ -1,10 +1,17 @@
+{% load forms %}
 
 {% if form.non_field_errors %}
-<div class="text-danger">
-{{ form.non_field_errors }}
+<div class="row">
+    <div class="{{ sizes|default:'md-9 sm-7'|inversecols }}"></div>
+    <div class="{{ sizes|default:'md-9 sm-7'|cols }}">
+        <div class="text-danger">
+            The following errors have occurred:
+            {{ form.non_field_errors }}
+        </div>
+    </div>
 </div>
 {% endif %}
 
 {% for field in form %}
-{% include 'forms/fields/horizontal.html' with field=field %}
+{% include field|template with field=field %}
 {% endfor %}
