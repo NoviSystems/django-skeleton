@@ -210,13 +210,22 @@ if env('GOOGLE_OPENIDCONNECT_KEY'):
 #
 # See https://docs.sentry.io/clients/python/integrations/django/
 if env('SENTRY_DSN'):
-    import raven
+    import raven.exceptions
 
     INSTALLED_APPS.append('raven.contrib.django.raven_compat')
 
+    try:
+        with open(path('version'), 'r') as versionfile:
+            release = versionfile.read().strip()
+    except FileNotFoundError:
+        try:
+            release = raven.fetch_git_sha(BASE_DIR)
+        except raven.exceptions.InvalidGitRepository:
+            release = 'unknown'
+
     RAVEN_CONFIG = {
         'dsn': env('SENTRY_DSN'),
-        'release': raven.fetch_git_sha(os.path.dirname(os.pardir))
+        'release': release,
     }
 
 
