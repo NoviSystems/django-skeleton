@@ -42,10 +42,10 @@ env.read_env(path('.env'))  # parse .env into os.environ
 AUTH_USER_MODEL = 'utils.User'
 
 LOGIN_URL = reverse_lazy('login')
-
 LOGOUT_URL = reverse_lazy('logout')
 
 LOGIN_REDIRECT_URL = reverse_lazy('home')
+LOGOUT_REDIRECT_URL = reverse_lazy('home')
 
 
 # Authentication Backends
