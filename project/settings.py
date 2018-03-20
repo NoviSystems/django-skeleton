@@ -7,7 +7,8 @@ suitable for production. The production settings files are located under
 the './deploy' directory.
 '''
 
-from .common_settings import *
+from .common_settings import *  # noqa
+from .common_settings import env, path
 
 
 # Prevent accidental sending of emails

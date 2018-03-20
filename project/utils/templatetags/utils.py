@@ -10,7 +10,10 @@ register = template.Library()
 
 # Originally from: https://djangosnippets.org/snippets/1519/
 CONSONANT_SOUND = re.compile(r'one(![ir])', re.IGNORECASE | re.VERBOSE)
-VOWEL_SOUND = re.compile(r'[aeio]|u([aeiou]|[^n][^aeiou]|ni[^dmnl]|nil[^l])|h(ier|onest|onou?r|ors\b|our(!i))|[fhlmnrsx]\b', re.IGNORECASE | re.VERBOSE)
+VOWEL_SOUND = re.compile(
+    r'[aeio]|u([aeiou]|[^n][^aeiou]|ni[^dmnl]|nil[^l])|h(ier|onest|onou?r|ors\b|our(!i))|[fhlmnrsx]\b',
+    re.IGNORECASE | re.VERBOSE
+)
 
 
 @register.filter
