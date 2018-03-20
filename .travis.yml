@@ -22,6 +22,9 @@ matrix:
         - { stage: test, env: TOXENV=integration, }
         - { stage: test, env: TOXENV=functional, }
 
+before_install:
+    - ln -s project/develop/env .env
+
 install:
     - pip install tox tox-travis
 
