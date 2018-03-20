@@ -15,12 +15,15 @@ matrix:
     fast_finish: true
 
     include:
-        - { env: TOXENV=lint, stage: lint }
-        - { env: TOXENV=isort, stage: lint }
+        - { stage: lint, env: TOXENV=lint, }
+        - { stage: lint, env: TOXENV=isort, }
 
-        - { env: TOXENV=unit, stage: test }
-        - { env: TOXENV=integration, stage: test }
-        - { env: TOXENV=functional, stage: test }
+        - { stage: test, env: TOXENV=unit, }
+        - { stage: test, env: TOXENV=integration, }
+        - { stage: test, env: TOXENV=functional, }
+
+before_install:
+    - ln -s project/develop/env .env
 
 install:
     - pip install tox tox-travis

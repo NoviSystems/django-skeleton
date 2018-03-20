@@ -9,21 +9,21 @@ import uuid
 
 import django.contrib.auth.backends
 import django.contrib.auth.forms
+from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse
 from django.db.transaction import atomic
 from django.forms import modelform_factory
-from django.http import Http404, HttpResponseRedirect
-from django.http import HttpResponseBadRequest
+from django.http import Http404, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, resolve_url
-from django.conf import settings
 
-from . import models
-from . import flows
+from . import flows, models
+
 
 def secure_uuid4():
     return uuid.UUID(bytes=os.urandom(16), version=4)
+
 
 def login(request, provider):
     """A view that returns a redirect to the given identity provider's
@@ -46,6 +46,7 @@ def login(request, provider):
     state = str(secure_uuid4())
     request.session['_oauth_state'] = state
     return HttpResponseRedirect(flow.step1_get_authorize_url(state=state))
+
 
 def complete(request, provider):
     """A view that the user is redirected to after identifying with an
@@ -81,8 +82,8 @@ def complete(request, provider):
             return _failure(request, msg)
         flow = flows.get_google_flow(request)
         credentials = flow.step2_exchange(request.GET['code'])
-        #http = httplib2.Http()
-        #http = credentials.authorize(http)
+        # http = httplib2.Http()
+        # http = credentials.authorize(http)
         # use the credentials to retrieve more user info here, if necessary
         # (not needed with google openid connect; we get the email in the
         # id_token)
@@ -125,6 +126,7 @@ def complete(request, provider):
         return HttpResponseRedirect(reverse("oauth_associate"))
 
     return _finish(request, oauthuser)
+
 
 def associate(request):
     """This view is called after a user has been identified via oauth but
@@ -218,6 +220,7 @@ def associate(request):
                       "form": form,
                       "loginform": django.contrib.auth.forms.AuthenticationForm(request),
                   })
+
 
 def _finish(request, oauthuser):
     """Returns a response that finishes the authentication flow.

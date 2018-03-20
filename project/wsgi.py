@@ -10,11 +10,11 @@ https://docs.djangoproject.com/en/1.10/howto/deployment/wsgi/
 import os.path
 
 from django.core.wsgi import get_wsgi_application
+from environ import Env
 
-import environ
 
 envfile = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env")
 if os.path.exists(envfile):
-    environ.Env.read_env(envfile)
+    Env.read_env(envfile)
 
 application = get_wsgi_application()
