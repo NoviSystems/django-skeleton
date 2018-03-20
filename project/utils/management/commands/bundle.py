@@ -115,6 +115,11 @@ class Command(BaseCommand):
             if archive.returncode > 0:
                 raise CommandError(f"'{ref}' is an invalid git reference")
 
+        # create version file
+        with self.step('Creating version file {} ...'.format(sha)):
+            with open(os.path.join(tmp, 'version'), 'w') as versionfile:
+                versionfile.write(f'{sha}\n')
+
         # javascript build
         if os.path.exists(os.path.join(tmp, 'package.json')):
             with self.step('Found \'package.json\'. Building javascript...'):
