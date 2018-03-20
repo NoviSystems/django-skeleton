@@ -46,6 +46,13 @@ class Command(BaseCommand):
         out, _ = process.communicate()
         return [int(v) for v in out.split()]
 
+    def check_uncommitted(self):
+        try:
+            check_call(['git', 'diff-index', '--quiet', 'HEAD', '--'])
+        except CalledProcessError:
+            raise CommandError("There are uncommitted changes. Stash or "
+                               "commit them before proceeding.")
+
     @contextmanager
     def step(self, msg='', success='done', failure='fail'):
         self.stderr.write('  - %s ' % (msg,), ending='')
@@ -78,6 +85,8 @@ class Command(BaseCommand):
             sys.stderr.flush()
 
     def handle(self, *args, **options):
+        self.check_uncommitted()
+
         ref = options['branch']
         ts = now().strftime(DATETIME_FORMAT)
         path = 'bundles/build-%(ref)s-%(ts)s' % locals()
