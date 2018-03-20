@@ -14,4 +14,3 @@ class OAuthBackend(django.contrib.auth.backends.ModelBackend):
 
         if oauthuser.user is not None:
             return oauthuser.user
-

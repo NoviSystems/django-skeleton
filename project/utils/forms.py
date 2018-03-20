@@ -1,5 +1,5 @@
-from django.forms.forms import BaseForm
 from django.forms.fields import FileField
+from django.forms.forms import BaseForm
 from django.utils.safestring import mark_safe
 
 

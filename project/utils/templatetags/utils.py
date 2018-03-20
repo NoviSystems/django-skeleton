@@ -1,8 +1,9 @@
-from collections import OrderedDict
 import re
+from collections import OrderedDict
 
 from django import template
 from django.utils.encoding import force_text
+
 
 register = template.Library()
 

@@ -2,6 +2,7 @@ from collections import OrderedDict
 
 from django import template
 
+
 register = template.Library()
 
 GRID_COLUMNS = 12

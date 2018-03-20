@@ -9,18 +9,17 @@ import uuid
 
 import django.contrib.auth.backends
 import django.contrib.auth.forms
+from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse
 from django.db.transaction import atomic
 from django.forms import modelform_factory
-from django.http import Http404, HttpResponseRedirect
-from django.http import HttpResponseBadRequest
+from django.http import Http404, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, resolve_url
-from django.conf import settings
 
-from . import models
-from . import flows
+from . import flows, models
+
 
 def secure_uuid4():
     return uuid.UUID(bytes=os.urandom(16), version=4)

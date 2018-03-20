@@ -4,7 +4,9 @@ import os
 import re
 import sys
 from contextlib import contextmanager
-from subprocess import check_call, check_output, Popen, PIPE, CalledProcessError
+from subprocess import (
+    PIPE, CalledProcessError, Popen, check_call, check_output,
+)
 from tempfile import mkdtemp
 
 from django.core.management.base import BaseCommand, CommandError
