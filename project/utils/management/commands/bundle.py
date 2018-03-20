@@ -28,8 +28,8 @@ class Command(BaseCommand):
             help='Specifies file to which the output is written.'
         )
         parser.add_argument(
-            '-t', '--tar', default=False, dest='tar', action="store_true",
-            help="Write output as a tar file",
+            '-t', '--tar', default=False, dest='tar', action='store_true',
+            help='Write output as a tar file (uses a zip archive otherwise).',
         )
         parser.add_argument(
             'branch',
