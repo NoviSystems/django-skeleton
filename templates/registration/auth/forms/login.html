@@ -2,18 +2,18 @@
 
 {% load forms %}
 
-{% with sizes='sm-8 lg-9' %}
+{% with sizes='xl-9 md-8' %}
 {% for field in form %}
 {% include field|template with field=field %}
 {% endfor %}
 
 {% if form.non_field_errors %}
 <div class="row">
-    <div class="{{ sizes|default:'md-9 sm-7'|inversecols }}"></div>
-    <div class="{{ sizes|default:'md-9 sm-7'|cols }}">
-        <div class="text-danger">
-            {{ form.non_field_errors }}
-        </div>
+    <div class="{{ sizes|inversecols }}"></div>
+    <div class="{{ sizes|cols }}">
+        {% for error in form.non_field_errors %}
+        <p class="text-danger">{{ error }}</p>
+        {% endfor %}
     </div>
 </div>
 {% endif %}

@@ -2,23 +2,23 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
-        <form class="form-horizontal" role="form" action="{% url 'login' %}{% if next %}?next={{ next }}{% endif %}" method="POST">
+    <div class="col-md-8 col-lg-6 mx-auto">
+        <form role="form" action="{% url 'login' %}{% if next %}?next={{ next }}{% endif %}" method="POST">
             {% csrf_token %}
-            <div class="panel panel-primary">
+            <div class="card border-primary">
 
-                <div class="panel-heading">
-                    <h3 class="panel-title">Please login</h3>
+                <div class="card-header text-white bg-primary">
+                    Please login
                 </div>
 
-                <div class="panel-body">
+                <div class="card-body">
                     {{ form }}
                 </div>
 
-                <div class="panel-footer">
+                <div class="card-footer">
                     <div class="text-right">
                         <a class="btn btn-link" href="{% url 'password_reset' %}"><small>Forget your password?</small></a>
-                        <a href="/" class="btn btn-default">Cancel</a>
+                        <a href="/" class="btn btn-outline-secondary" role="btn">Cancel</a>
                         <button class="btn btn-primary" type="submit">Login</button>
                     </div>
                 </div>
