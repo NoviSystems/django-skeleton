@@ -38,10 +38,13 @@ new or existing project.
 
 3. Install dependencies
 
-   The python dependencies are listed in requirements.txt, and can be
-   installed with:
+   Dependencies are separated into development and runtime dependencies, and
+   can be installed with:
 
-   ```$ pip install -r requirements.txt```
+   ```shell
+   $ pip install -r dev-requirements.txt
+   $ pip install -r requirements.txt
+   ```
 
    If some python dependencies require compiled C extensions, you will need
    to install a C compiler and the Python development headers first or the
@@ -250,8 +253,39 @@ to apply any changes to your local database. You can run this
 unconditionally after a pull or merge, as it doesn't do anything if there are
  no unapplied migrations.
 
-If any new dependencies were added to requirements.txt, you will also need to
- run
+If any new dependencies were added to requirements.txt, you will need to run
 
-```pip install --upgrade -r requirements.txt```
+```pip install -r requirements.txt```
 
+## Running the Test Suite
+
+Several test suites are provided that range in scope from small, individual unit
+tests, to slower, more comprehensive end-to-end tests. Code quality checks are
+also present.
+
+To run the entire test suite, install the dev requirements, then run tox.
+
+```
+$ pip install -r dev-requirements.txt
+$ tox
+```
+
+By default, tox will run all test environments. If this takes too long, you may
+wish to run the test environments individually. First, list the available test
+environments.
+
+```
+$ tox -l
+unit
+integration
+functional
+lint
+isort
+warnings
+```
+
+Then, you can run the desired test suites.
+
+```
+$ tox -e isort,lint
+```

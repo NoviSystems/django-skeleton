@@ -4,23 +4,27 @@ cache: pip
 python:
     - "3.6"
 
-sudo: false
+sudo: required
 
 stages:
     - lint
     - test
+    - system
 
 matrix:
-
     fast_finish: true
 
     include:
-        - { stage: lint, env: TOXENV=lint, }
-        - { stage: lint, env: TOXENV=isort, }
+      - { stage: lint, env: TOXENV=lint, }
+      - { stage: lint, env: TOXENV=isort, }
 
-        - { stage: test, env: TOXENV=unit, }
-        - { stage: test, env: TOXENV=integration, }
-        - { stage: test, env: TOXENV=functional, }
+      - { stage: test, env: TOXENV=unit, }
+      - { stage: test, env: TOXENV=integration, }
+
+      - stage: system
+        env: TOXENV=functional
+        addons:
+            chrome: stable
 
 before_install:
     - ln -s project/develop/env .env
