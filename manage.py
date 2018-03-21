@@ -4,7 +4,11 @@ import sys
 
 import environ
 
+
 if __name__ == "__main__":
+    srcpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "src")
+    sys.path.insert(1, srcpath)
+
     envfile = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
     if os.path.exists(envfile):
         environ.Env.read_env(envfile)

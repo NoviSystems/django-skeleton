@@ -38,7 +38,7 @@ env = environ.Env(
     GOOGLE_OPENIDCONNECT_SECRET=(str, ''),
     SENTRY_DSN=(str, ''),
 )
-env.read_env(path('.env'))  # parse .env into os.environ
+env.read_env(path('../.env'))  # parse .env into os.environ
 
 
 # Authentication
