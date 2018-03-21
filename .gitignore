@@ -1,6 +1,6 @@
 # Application
-node_modules/
 bundles/
+node_modules/
 *.sqlite3
 *.redis
 
