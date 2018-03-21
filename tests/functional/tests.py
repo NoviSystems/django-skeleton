@@ -27,7 +27,10 @@ class LoginTests(FunctionalTestCase):
         self.assertEqual(self.url('home'), self.driver.current_url)
         self.assertInHTML('Home page', self.driver.page_source)
         self.assertInHTML('Logged in as user', self.driver.page_source)
-        self.assertInHTML('<a href="/logout/">Logout</a>', self.driver.page_source)
+
+        logout = self.select('.navbar .navbar-nav:last-child') \
+                     .find_element_by_css_selector('a:last-child')
+        self.assertEqual(logout.text, 'Log out')
 
 
 class HomePageTests(FunctionalTestCase):
@@ -46,4 +49,7 @@ class HomePageTests(FunctionalTestCase):
         self.driver.get(self.url('home'))
         self.assertInHTML('Home page', self.driver.page_source)
         self.assertInHTML('Logged in as user', self.driver.page_source)
-        self.assertInHTML('<a href="/logout/">Logout</a>', self.driver.page_source)
+
+        logout = self.select('.navbar .navbar-nav:last-child') \
+                     .find_element_by_css_selector('a:last-child')
+        self.assertEqual(logout.text, 'Log out')
