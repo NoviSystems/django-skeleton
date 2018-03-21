@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 
-{% block styles %}
-<style>
-.panel {
-    margin: 60px auto;
-}
-</style>
+{% block container %}
+<div class="container mt-5">
+    {% block content %}{% endblock %}
+</div>
 {% endblock %}
