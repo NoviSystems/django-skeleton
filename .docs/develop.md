@@ -4,6 +4,11 @@ These instructions will walk you through setting up a development environment
 for django projects using our usual setup. It also covers some of our process
 and best practices for our development environment.
 
+**Best Practices:**
+- [Adding new dependencies with pip-tools](#adding-new-dependencies-with-pip-tools)
+- [Changing database models](#changing-database-models)
+- [Pulling upstream changes](#pulling-upstream-changes)
+
 
 ## One-time Setup
 
@@ -12,34 +17,43 @@ new or existing project.
 
 1. Clone the repository into a new directory. e.g.:
 
-   ```$ git clone git@github.com:ITNG/django-skeleton.git```
+   ```bash
+   $ git clone git@github.com:ITNG/django-skeleton.git
+   ```
 
    and then `cd` into the new directory that was created. e.g.
 
-   ```$ cd django-skeleton```
+   ```bash
+   $ cd django-skeleton
+   ```
 
    (obviously your repo and directory name will be different for existing
    projects)
 
 2. Create a virtual environment with the `virtualenv` command.
 
-   ```$ virtualenv -p python3 env```
+   ```bash
+   $ python3 -m venv env
+   ```
 
    Replacing `python3` with the name of the python binary you want to use. I
    assume python3 for this, which uses the default version of Python 3 on
    your system.
 
    This creates a virtual environment in the directory `env`. This is where
-   locally installed python dependencies will live.
+   locally installed python dependencies will live. For consitency, `env` will
+   be assumed in the docs, but the you can use any name you want.
 
    Now activate your virtualenv with:
 
-   ```$ source env/bin/activate```
+   ```bash
+   $ source env/bin/activate
+   ```
 
 3. Install dependencies
 
-   Dependencies are separated into development and runtime dependencies, and
-   can be installed with:
+   Dependencies are separated into development and application dependencies,
+   and can be installed with:
 
    ```shell
    $ pip install -r dev-requirements.txt
@@ -84,24 +98,20 @@ new or existing project.
    The command will ask you for a username, email, and password. The email
    can be anything, it doesn't matter for development.
 
-   I like to use simple passwords for local development, but the default
-   django settings disallow weak passwords such as "password". You can add
-   this line to your settings.py to disable all password validators:
-
-   ```AUTH_PASSWORD_VALIDATORS = []```
-
 That's all the one-time setup! Some projects may have additional steps or
 values to fill in in your settings.py file.
 
 Once ready, Move on to the "running the test server" section below.
 
 
-## Setting up your environment
+## Using your environment
 
 You'll need to activate your virtual environment in each terminal you open.
 First `cd` to your project directory and then activate the virtualenv with
 
-```$ source env/bin/activate```
+```bash
+$ source env/bin/activate
+```
 
 Now your terminal prompt is modified, and any python commands you run will
 use the libraries installed in the virtual environment.
@@ -112,7 +122,9 @@ If you are done working or want to switch to another one, run the
 
 ## Running the test server
 
-```./manage.py runserver [addrport]```
+```bash
+$ ./manage.py runserver [addrport]
+```
 
 This command runs the Django test server. While the test server is running,
 you will be able to access your web app. The test server automatically
@@ -160,7 +172,7 @@ When you want to return to a tmux session, use the command `tmux attach`
 Once you exit the shell within a tmux session, that session will exit.
 
 
-## Managing new dependencies with `pip-tools`
+## Adding new dependencies with `pip-tools`
 
 We use [`pip-tools`](https://github.com/nvie/pip-tools) to manage dependencies
 in our projects. If you need to add a dependency, do the following:
@@ -232,8 +244,8 @@ In other words, if you make changes to the Django models, make sure you run
 makemigrations and `git add` and commit the newly generated migration files at
 the same time you commit the models.
 
-This way, when collaborators pull your changes, they only need to run `
-./manage.py migrate` to update their database with your changes.
+This way, when collaborators pull your changes, they only need to run
+`./manage.py migrate` to update their database with your changes.
 
 Another rule is **Never delete migration files after they have been
 committed**. If people have applied a migration, and then the migration is
@@ -242,50 +254,21 @@ made may conflict with changes in the database that are essentially unknown
 to Django.
 
 
-## Pulling Changes
+## Pulling upstream changes
 
 When you pull remote changes from the repository, the one thing to be mindful
 about is if any database changes were made. If so, run
 
-```./manage.py migrate```
+```bash
+$ ./manage.py migrate
+```
 
-to apply any changes to your local database. You can run this
-unconditionally after a pull or merge, as it doesn't do anything if there are
- no unapplied migrations.
+To apply any changes to your local database. You can run this unconditionally
+after a pull or merge, as it doesn't do anything if there are no unapplied
+migrations.
 
 If any new dependencies were added to requirements.txt, you will need to run
 
-```pip install -r requirements.txt```
-
-## Running the Test Suite
-
-Several test suites are provided that range in scope from small, individual unit
-tests, to slower, more comprehensive end-to-end tests. Code quality checks are
-also present.
-
-To run the entire test suite, install the dev requirements, then run tox.
-
-```
-$ pip install -r dev-requirements.txt
-$ tox
-```
-
-By default, tox will run all test environments. If this takes too long, you may
-wish to run the test environments individually. First, list the available test
-environments.
-
-```
-$ tox -l
-unit
-integration
-functional
-lint
-isort
-warnings
-```
-
-Then, you can run the desired test suites.
-
-```
-$ tox -e isort,lint
+```bash
+$ pip install -r requirements.txt
 ```

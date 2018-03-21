@@ -1,7 +1,7 @@
 # Project Configuration
 
-This directory contains all of the files specific to application configuration (in addition to some general-purpose
-utility code). Notable files:
+The project directory contains all of the files specific to application configuration (in addition to a general-purpose
+utility package). Notable files:
 
 - `common_settings.py`: The majority of settings that are common to both development and production environments.
 - `settings.py`: Contains settings that are configured for *local development*.
