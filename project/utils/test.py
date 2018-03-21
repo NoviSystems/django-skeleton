@@ -1,3 +1,5 @@
+import os
+import sys
 from atexit import register
 from contextlib import contextmanager
 
@@ -32,8 +34,43 @@ class FunctionalTestCase(StaticLiveServerTestCase):
         cls.domain = urlparse(cls.live_server_url).hostname
 
     def tearDown(self):
+        # take screenshot on test failure
+        if sys.exc_info()[0]:
+            test_name = f'{self.__module__}.{self.__class__.__name__}.{self._testMethodName}'
+            self.save_logs(f'debug/{test_name}.logs')
+            self.save_page(f'debug/{test_name}.html')
+            assert self.save_screenshot(f'debug/{test_name}.png'), \
+                f"Failed to save screenshot for {self._testMethodName}."
+
         self.driver.delete_all_cookies()
         self.driver.refresh()
+        super(FunctionalTestCase, self).tearDown()
+
+    def ensure_pathdirs(self, path):
+        path = os.path.abspath(os.path.join(settings.BASE_DIR, path))
+        directory = os.path.dirname(path)
+
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+    def save_logs(self, path):
+        self.ensure_pathdirs(path)
+
+        with open(path, 'w') as file:
+            for line in self.driver.get_log('browser'):
+                file.write('%s: %s\n' % (line['level'], line['message']))
+
+    def save_page(self, path):
+        self.ensure_pathdirs(path)
+
+        with open(path, 'wb') as file:
+            file.write(self.driver.page_source.encode('utf-8'))
+
+    def save_screenshot(self, path):
+        self.ensure_pathdirs(path)
+
+        self.driver.set_window_size(1920, 1080)
+        return self.driver.save_screenshot(path)
 
     def save_cookie(self, name, path='/', expires='Tue, 20 Jun 2025 19:07:44 GMT'):
         value = self.client.cookies[name].value
