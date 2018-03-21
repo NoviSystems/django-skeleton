@@ -342,6 +342,6 @@ LOGGING = {
     },
     "root": {
         "handlers": ["stderr"],
-        "level": "WARNING",
+        "level": "INFO" if DEBUG else "WARNING",
     },
 }
