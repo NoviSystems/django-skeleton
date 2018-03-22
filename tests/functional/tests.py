@@ -44,7 +44,7 @@ class HomePageTests(FunctionalTestCase):
         self.assertNotIn('Logged in as user', self.driver.page_source)
 
     def test_authenticated(self):
-        self.login(username='user', password='password')
+        self.client.login(username='user', password='password')
 
         self.driver.get(self.url('home'))
         self.assertInHTML('Home page', self.driver.page_source)

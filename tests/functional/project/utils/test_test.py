@@ -14,7 +14,7 @@ class FunctionalTestCaseTests(FunctionalTestCase):
     def test_login(self):
         self.assertNotIn('username', self.driver.page_source)
 
-        self.login(username='username', password='password')
+        self.client.login(username='username', password='password')
 
         self.driver.get(self.url('home'))
         self.assertIn('username', self.driver.page_source)
@@ -22,7 +22,7 @@ class FunctionalTestCaseTests(FunctionalTestCase):
     def test_force_login(self):
         self.assertNotIn('username', self.driver.page_source)
 
-        self.force_login(self.user)
+        self.client.force_login(self.user)
 
         self.driver.get(self.url('home'))
         self.assertIn('username', self.driver.page_source)

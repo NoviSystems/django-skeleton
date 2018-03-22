@@ -2,11 +2,12 @@ import os
 import sys
 from atexit import register
 from contextlib import contextmanager
+from urllib.parse import urljoin, urlparse
 
 from django.conf import settings
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.test.client import Client
 from django.urls import reverse
-from django.utils.six.moves.urllib.parse import urljoin, urlparse
 
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
@@ -26,15 +27,50 @@ driver = webdriver.Chrome(executable_path='chromedriver', chrome_options=opts)
 register(driver.quit)
 
 
-class FunctionalTestCase(StaticLiveServerTestCase):
-    @classmethod
-    def setUpClass(cls):
-        super(FunctionalTestCase, cls).setUpClass()
-        cls.driver = driver
-        cls.domain = urlparse(cls.live_server_url).hostname
+class SeleniumClient(Client):
 
-    def tearDown(self):
-        # take screenshot on test failure
+    def add_cookie(self, name, **opts):
+        value = self.cookies[name].value
+
+        current_url = self.driver.current_url
+        if not current_url.startswith(self.server_url):
+            self.driver.get(self.server_url)
+
+        self.driver.add_cookie({
+            'name': name,
+            'value': value,
+            **opts
+        })
+
+    def login(self, **credentials):
+        super().login(**credentials)
+        self.add_cookie(settings.SESSION_COOKIE_NAME)
+
+    def force_login(self, user, backend=None):
+        super().force_login(user, backend)
+        self.add_cookie(settings.SESSION_COOKIE_NAME)
+
+    @contextmanager
+    def logged_in(self, **credentials):
+        try:
+            self.login(**credentials)
+            yield
+        finally:
+            self.logout()
+
+
+class FunctionalTestCase(StaticLiveServerTestCase):
+    client_class = SeleniumClient
+
+    def _pre_setup(self):
+        super()._pre_setup()
+        self.driver = driver
+        self.domain = urlparse(self.live_server_url).hostname
+
+        self.client.driver = self.driver
+        self.client.server_url = self.live_server_url
+
+    def _post_teardown(self):
         if sys.exc_info()[0]:
             test_name = f'{self.__module__}.{self.__class__.__name__}.{self._testMethodName}'
             self.save_logs(f'debug/{test_name}.logs')
@@ -44,7 +80,7 @@ class FunctionalTestCase(StaticLiveServerTestCase):
 
         self.driver.delete_all_cookies()
         self.driver.refresh()
-        super(FunctionalTestCase, self).tearDown()
+        super()._post_teardown()
 
     def ensure_pathdirs(self, path):
         path = os.path.abspath(os.path.join(settings.BASE_DIR, path))
@@ -71,34 +107,6 @@ class FunctionalTestCase(StaticLiveServerTestCase):
 
         self.driver.set_window_size(1920, 1080)
         return self.driver.save_screenshot(path)
-
-    def save_cookie(self, name, path='/', expires='Tue, 20 Jun 2025 19:07:44 GMT'):
-        value = self.client.cookies[name].value
-
-        self.driver.get(self.url('home'))
-        self.driver.execute_script(
-            "document.cookie = '{name}={value}; path={path}; domain={domain}; expires={expires}';\n"
-            .format(name=name, value=value, path=path, domain=self.domain, expires=expires)
-        )
-
-    def login(self, **credentials):
-        self.client.login(**credentials)
-        self.save_cookie(settings.SESSION_COOKIE_NAME)
-
-    def force_login(self, user, backend=None):
-        self.client.force_login(user, backend)
-        self.save_cookie(settings.SESSION_COOKIE_NAME)
-
-    def logout(self):
-        self.client.logout()
-
-    @contextmanager
-    def logged_in(self, **credentials):
-        try:
-            self.login(**credentials)
-            yield
-        finally:
-            self.logout()
 
     def url(self, name):
         """
