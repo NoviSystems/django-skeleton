@@ -1,6 +1,7 @@
 # Django Skeleton
 
 [![Build Status](https://travis-ci.org/ITNG/django-skeleton.svg?branch=master)](https://travis-ci.org/ITNG/django-skeleton)
+[![BSD-3 License](https://img.shields.io/github/license/ITNG/django-skeleton.svg)]()
 [![Python Version](https://img.shields.io/badge/Python-3.6-blue.svg)]()
 [![Django Version](https://img.shields.io/badge/Django-1.11-blue.svg)]()
 
