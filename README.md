@@ -9,7 +9,7 @@ Extended startproject template for new Django projects.
 
 ## Builtin Features
 
-- [Developer usage docs](.docs)
+- [Developer usage docs](docs)
 - Flexible base template layout with navbar and dismissable flash messages
 - Styled with Bootstrap 4
 - Glyphicons ported from Bootstrap 3
@@ -48,7 +48,7 @@ choosing in the following places:
     - In `common_settings.py`, the `LOGGING` setting
     - The import statement in the project-wide `urls.py`
 3. Change the skeleton project name references to your project name.
-    - The [developer docs](.docs)
+    - The [developer docs](docs)
 4. Run `git init` and make your initial commit
 5. Set up git remotes and push the initial commit to a remote repository
 6. Continue to the next step for Setting up your Development Enviroment
