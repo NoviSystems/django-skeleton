@@ -52,7 +52,7 @@ then bash will do the substitution for you.
     ```bash
     # On your local machine:
     $ export DEPLOYMENT=deployment
-    $ ./manage.py bundle --tar -o - | ssh remote-machine.example.com sudo tar xC /opt/$DEPLOYMENT
+    $ ./manage.py bundle master --tar -o - | ssh remote-machine.example.com sudo tar xC /opt/$DEPLOYMENT
     ```
 
     *See the "Deploying Changes" section below for a convenient script that
@@ -313,7 +313,7 @@ REMOTE=remote-machine.example.com
 set -e -x
 
 # Copy the code
-./manage.py bundle --tar -o - | ssh $REMOTE sudo tar xC /opt/$DEPLOYMENT
+./manage.py bundle master --tar -o - | ssh $REMOTE sudo tar xC /opt/$DEPLOYMENT
 # Install any new requirements
 ssh $REMOTE sudo /opt/$DEPLOYMENT/env/bin/pip install -r /opt/$DEPLOYMENT/requirements.txt
 # Collect any new static files

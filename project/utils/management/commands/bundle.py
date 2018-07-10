@@ -102,8 +102,8 @@ class Command(BaseCommand):
         if out != '-':
             out = os.path.abspath(out)
 
-        # ensure output directory
-        check_call(['mkdir', '-p', os.path.dirname(out)])
+            # ensure output directory
+            check_call(['mkdir', '-p', os.path.dirname(out)])
 
         msg = f'Creating application bundle for: {ref}'
         self.stderr.write(self.style.MIGRATE_HEADING(msg))
