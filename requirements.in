@@ -1,7 +1,6 @@
-Django>=2.1,<2.2
+Django~=2.1.0
 django-environ>=0.4.3
 colorlog
 
-# Optional Integrations
-oauth2client
-raven
+# Raven is used for sentry logging
+#raven

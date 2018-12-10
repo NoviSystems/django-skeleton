@@ -184,18 +184,6 @@ MESSAGE_TAGS = {
 GOOGLE_ANALYTICS_KEY = env('GOOGLE_ANALYTICS_KEY')
 
 
-# OAUTH 2
-# Copy your google oauth2 credentials into your .env file if using oauth.
-# When creating the google oauth2 credentials, use this as the callback url:
-# https://SERVER/oauth/provider/google/complete
-if env('GOOGLE_OPENIDCONNECT_KEY'):
-    GOOGLE_OPENIDCONNECT_KEY = env('GOOGLE_OPENIDCONNECT_KEY')
-    GOOGLE_OPENIDCONNECT_SECRET = env('GOOGLE_OPENIDCONNECT_SECRET')
-
-    AUTHENTICATION_BACKENDS.append('oauth.authbackend.OAuthBackend')
-    INSTALLED_APPS.append('oauth')
-
-
 # Sentry/Raven
 # To support sentry logging, set the DSN in your .env file. You will need an
 # account on a sentry server and create a project to get a DSN.
