@@ -6,9 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Project Title{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/bootstrap-ext.css' %}">
-    <link rel="stylesheet" href="{% static 'css/glyphicons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     {% block styles %}{% endblock %}
 
     {% if GA %}
@@ -81,8 +79,8 @@
 </div>
 {% endblock %}
 
-<script src="{% static 'js/jquery.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery-3.3.1.js' %}"></script>
+<script src="{% static 'js/bootstrap.bundle.js' %}"></script>
 {% block scripts %}{% endblock %}
 
 </body>
