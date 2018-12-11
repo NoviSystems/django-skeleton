@@ -90,4 +90,8 @@ celerybeat-schedule
 venv/
 env/
 
+# pycharm data
 /.idea
+
+# vim swap files
+.*.swp
