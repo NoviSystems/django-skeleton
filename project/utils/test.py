@@ -16,11 +16,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 
-
 opts = Options()
 opts.add_argument("--headless")
 opts.add_argument("--window-size=1920x1080")
-
 
 # Use a shared chromedriver instance given slow startup speed
 driver = webdriver.Chrome(executable_path='chromedriver', chrome_options=opts)
@@ -72,7 +70,9 @@ class FunctionalTestCase(StaticLiveServerTestCase):
 
     def _post_teardown(self):
         if sys.exc_info()[0]:
-            test_name = f'{self.__module__}.{self.__class__.__name__}.{self._testMethodName}'
+            test_name = f'{self.__module__}.'\
+                        f'{self.__class__.__name__}.'\
+                        f'{self._testMethodName}'
             self.save_logs(f'debug/{test_name}.logs')
             self.save_page(f'debug/{test_name}.html')
             assert self.save_screenshot(f'debug/{test_name}.png'), \

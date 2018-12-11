@@ -110,7 +110,7 @@ class Command(BaseCommand):
 
         # copy the project to archive directory
         with self.step('Creating build directory at {} ...'.format(tmp)):
-            archive = Popen(['git',  'archive', ref], stdout=PIPE)
+            archive = Popen(['git', 'archive', ref], stdout=PIPE)
             check_call(['tar', '-x', '-C', tmp], stdin=archive.stdout)
             archive.stdout.close()
             archive.wait()
@@ -126,7 +126,8 @@ class Command(BaseCommand):
         if os.path.exists(os.path.join(tmp, 'package.json')):
             with self.step('Found \'package.json\'. Building javascript...'):
                 try:
-                    self.stream(['npm', 'install', '--only=production'], cwd=tmp)
+                    self.stream(['npm', 'install', '--only=production'],
+                                cwd=tmp)
                     self.stream(['npm', 'run', 'build'], cwd=tmp)
                 except OSError as e:
                     raise StepFail("Could not execute NPM commands.\nIf you "
@@ -135,7 +136,8 @@ class Command(BaseCommand):
                                    "the repository.\nOriginal "
                                    "exception was: {}".format(e)) from e
         else:
-            self.stderr.write('  - No \'package.json\' found. Skipping javascript build.')
+            self.stderr.write(
+                '  - No \'package.json\' found. Skipping javascript build.')
 
         # Create zip archive
         with self.step('Writing bundle...'):

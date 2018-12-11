@@ -5,7 +5,6 @@ from django.db import models
 from factory.django import DjangoModelFactory
 from faker import Factory as FakerFactory
 
-
 faker = FakerFactory.create()
 User = get_user_model()
 
@@ -29,8 +28,10 @@ def _unique_attr(model, attr_name, callback, max_attempts=3):
 
 
 class UserFactory(DjangoModelFactory):
-    username = factory.LazyAttribute(_unique_attr(User, 'username', lambda p: faker.username()))
-    email = factory.LazyAttribute(_unique_attr(User, 'email', lambda p: faker.email()))
+    username = factory.LazyAttribute(
+        _unique_attr(User, 'username', lambda p: faker.username()))
+    email = factory.LazyAttribute(
+        _unique_attr(User, 'email', lambda p: faker.email()))
     first_name = factory.LazyAttribute(lambda p: faker.first_name())
     last_name = factory.LazyAttribute(lambda p: faker.last_name())
 

@@ -39,6 +39,7 @@ from . import models
 SALT = "invite"
 ACCOUNT_ACTIVATION_DAYS = 3
 
+
 def invite_user(request, email):
     """Entry point for various views that invite users into a role
 
@@ -78,6 +79,7 @@ def invite_user(request, email):
 
     return user
 
+
 def send_invite(request, user):
     """Sends an invite to the specified user"""
     token = signing.dumps(user.id, salt=SALT)
@@ -105,9 +107,11 @@ def send_invite(request, user):
     )
     msg.send()
 
+
 def get_user_from_token(token):
     try:
-        uid = signing.loads(token, max_age=ACCOUNT_ACTIVATION_DAYS*60*60*24,
+        uid = signing.loads(token,
+                            max_age=ACCOUNT_ACTIVATION_DAYS * 60 * 60 * 24,
                             salt=SALT)
     except signing.BadSignature:
         return None
@@ -116,6 +120,7 @@ def get_user_from_token(token):
         return models.User.objects.get(id=uid)
     except models.User.DoesNotExist:
         return None
+
 
 class InviteAccept(TemplateView):
     """Landing page for invite links sent over email
@@ -134,6 +139,7 @@ class InviteAccept(TemplateView):
             )
             return HttpResponseRedirect(reverse("account_setup"))
         return super().get(request, *args, **kwargs)
+
 
 class AccountSetup(LoginRequiredMixin, FormView):
     """Provides a view to set a user's password if their account isn't set up

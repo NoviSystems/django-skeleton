@@ -16,7 +16,6 @@ from django.contrib.messages import DEFAULT_TAGS
 from django.contrib.messages import constants as messages
 from django.urls import reverse_lazy
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -35,7 +34,6 @@ env = environ.Env(
 )
 env.read_env(path('.env'))  # parse .env into os.environ
 
-
 AUTH_USER_MODEL = 'utils.User'
 
 LOGIN_URL = reverse_lazy('login')
@@ -48,7 +46,6 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
@@ -60,8 +57,6 @@ SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -117,12 +112,23 @@ DATABASES = {
     'default': env.db(),
 }
 
-
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
+    {
+        'NAME': 'django.contrib.auth.password_validation.'
+                'UserAttributeSimilarityValidator'
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.'
+                'MinimumLengthValidator'
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.'
+                'CommonPasswordValidator'
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.'
+                'NumericPasswordValidator'
+    },
 ]
 
 LANGUAGE_CODE = 'en-us'
@@ -135,16 +141,13 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     path('static')
 ]
 
-
 MEDIA_URL = '/media/'
-
 
 # Messages - tags compatible w/ bootstrap and django admin styles
 MESSAGE_TAGS = {
@@ -155,10 +158,8 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger %s' % DEFAULT_TAGS[messages.ERROR],
 }
 
-
 # Google Analytics
 GOOGLE_ANALYTICS_KEY = env('GOOGLE_ANALYTICS_KEY')
-
 
 # Sentry/Raven
 # To support sentry logging, set the DSN in your .env file. You will need an
@@ -194,7 +195,6 @@ if env('SENTRY_DSN'):
         'dsn': env('SENTRY_DSN'),
         'release': release,
     }
-
 
 # Our preferred logging configuration.
 # Django takes the LOGGING setting and passes it as-is into Python's

@@ -9,7 +9,10 @@ User = get_user_model()
 class FunctionalTestCaseTests(FunctionalTestCase):
 
     def setUp(self):
-        self.user = User.objects.create_user(username='username', password='password')
+        self.user = User.objects.create_user(
+            username='username',
+            password='password'
+        )
 
     def test_login(self):
         self.assertNotIn('username', self.driver.page_source)

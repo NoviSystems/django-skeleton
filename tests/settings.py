@@ -1,6 +1,7 @@
 from redislite import Redis
 
-from project.common_settings import *  # flake8: noqa
+from project.common_settings import *  # noqa: F401,F403
+from project.common_settings import path
 
 
 # Create a Redis instance using redislite

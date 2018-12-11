@@ -14,10 +14,14 @@ NOTE: On postgres you must run "CREATE EXTENSION CITEXT" before the
 initial migration to enable the citext extension.
 """
 
+import django.contrib.auth.models
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.base_user import BaseUserManager
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -48,6 +52,7 @@ class UserManager(BaseUserManager):
 
         return self._create_user(email, password, **extra_fields)
 
+
 class CICharField(models.CharField):
     """Case insensitive char field
 
@@ -60,6 +65,7 @@ class CICharField(models.CharField):
     Preserves case, but comparisons and indexes on this field are case
     insensitive compares.
     """
+
     def db_type(self, connection):
         if connection.vendor == "sqlite":
             return super().db_type(connection) + " COLLATE NOCASE"
@@ -68,6 +74,7 @@ class CICharField(models.CharField):
             return "CITEXT"
 
         return None
+
 
 class CIEmailField(CICharField, models.EmailField):
     """Case insensitive email field
@@ -86,6 +93,7 @@ class CIEmailField(CICharField, models.EmailField):
     """
     pass
 
+
 class User(AbstractUser):
     """User model that uses email address as the identifier"""
     username = None
@@ -96,14 +104,12 @@ class User(AbstractUser):
 
     objects = UserManager()
 
+
 # The following is a custom admin model. This should really go in the
 # admin.py file but for the sake of keeping the email-user model all in one
 # file, it's included inline here.
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-import django.contrib.auth.models
-
 admin.site.unregister(django.contrib.auth.models.Group)
+
 
 @admin.register(User)
 class UserAdmin(UserAdmin):

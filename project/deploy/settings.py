@@ -1,13 +1,13 @@
-'''
+"""
 -*- Production Settings -*-
 
 This file contains production-specific settings. Complete the deployment
 checklist and make any necessary changes.
 
 https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
-'''
+"""
 
-from ..common_settings import *  # noqa
+from ..common_settings import *  # noqa: F401,F403
 from ..common_settings import env, path
 
 
@@ -33,7 +33,8 @@ SECURE_SSL_REDIRECT = False
 STATIC_ROOT = path(env.str("STATIC_ROOT"))
 
 # manifest storage is useful for its automatic cache busting properties
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage' \
+                      '.ManifestStaticFilesStorage '
 
 
 # Set your MEDIA_ROOT to some directory that's writable by your web server if
