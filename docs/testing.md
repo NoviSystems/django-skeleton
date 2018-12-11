@@ -15,8 +15,8 @@ The main test suite structure consists of three components:
   application workflows are functioning as expected. These tests are generally
   slow, as the rely on Selenium to drive a headless web browser (Google Chrome).
 
-In addition to the test suite, tox contains test envs for linting the codebase
-with [isort](https://github.com/timothycrosley/isort) and
+In addition to the test suite, our test setup contains configurations
+for linting the codebase with
 [flake8](http://flake8.pycqa.org/en/latest/).
 
 
@@ -53,21 +53,13 @@ unit
 integration
 functional
 lint
-isort
-warnings
+coverage
 ```
 
 Now that you know the names of the various test environments, you can select
 the desired test envs.
 
 ```bash
-$ tox -e isort,lint
+$ tox -e unit,lint
 ```
 
-
-## Continuous Integration
-
-The project includes a Travis-CI config with a multi-stage build process. To
-enable Travis, read their "[Getting Started][guide]" guide.
-
-[guide]: https://docs.travis-ci.com/user/getting-started/
