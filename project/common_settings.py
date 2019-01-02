@@ -229,13 +229,15 @@ if env('SENTRY_DSN'):
 #
 # You don't need to declare a loggers in the config; they are created
 # implicitly with no level and no handlers when calling logging.getLogger()
-#
-#
-# Note: if you are getting a lot of DEBUG or INFO level log messages from
-# third party libraries, a good change to make is:
-# * Set the root logger level to "WARNING"
-# * Add a logger for your project and set its level to DEBUG or INFO
-# * Use your logger or a sub-logger of it throughout your project
+
+# This gets whether stderr is attached to a tty. Sometimes stderr may be
+# replaced by a file-like object that doesn't have an .isatty() method, e.g.
+# when running under Dramatiq. In this particular case, stderr is a file-like
+# object that wraps a pipe that sends output to the master process. There's no
+# way to detect whether that will ultimately end up at a tty or not, but
+# a good guess is to look at the process's original stderr at sys.__stderr__
+STDERR_ISATTY = sys.stderr.isatty() if hasattr(sys.stderr, "isatty") else sys.__stderr__.isatty()
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -268,7 +270,7 @@ LOGGING = {
     "handlers": {
         "stderr": {
             "class": "logging.StreamHandler",
-            "formatter": "color" if sys.stderr.isatty() else "nocolor",
+            "formatter": "color" if STDERR_ISATTY else "nocolor",
         },
         'mail_admins': {
             'level': 'ERROR',
