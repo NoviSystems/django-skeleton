@@ -33,12 +33,13 @@ then bash will do the substitution for you.
     ```
 * Install PostgreSQL and setup the application database.
     ```bash
-    $ yum install https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-centos96-9.6-3.noarch.rpm
-    $ yum install postgresql96 postgresql96-server postgresql96-devel
-    $ /usr/pgsql-9.6/bin/postgresql96-setup initdb
-    $ systemctl enable postgresql-9.6 && systemctl start postgresql-9.6
-    $ sudo -u postgres createuser $DEPLOYMENT
-    $ sudo -u postgres createdb -O $DEPLOYMENT $DEPLOYMENT
+    yum install https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm
+    yum install postgresql11
+    um install postgresql11 postgresql11-server postgresql11-devel
+    /usr/pgsql-11/bin/postgresql-11-setup initdb
+    systemctl enable postgresql-11 && systemctl start postgresql-11
+    sudo -u postgres createuser $DEPLOYMENT
+    sudo -u postgres createdb -O $DEPLOYMENT $DEPLOYMENT
     ```
 * Extract the code bundle to `/opt/$DEPLOYMENT`. It should be owned by the root
     user or some user other than the deployment user. The deployment user is
@@ -78,7 +79,7 @@ then bash will do the substitution for you.
 * If you need postgres extensions loaded, do that manually now before you
 migrate
     ```bash
-    $ yum install postgresql96-contrib
+    $ yum install postgresql11-contrib
     $ sudo -u postgres psql $DEPLOYMENT
     ```
     ```sql
