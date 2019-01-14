@@ -191,92 +191,24 @@ Adapted from:
 To get LetsEncrypt running on the Nginx instance you just set up, follow
 these steps:
 
-1. `yum install certbot` (assumes CentOS7 and epel repos installed)
-2. Create a directory somewhere on the filesystem such as /opt/webroot
-3. Add a new location block to your nginx config that looks like this:
+1. `yum install certbot python2-certbot-nginx` (assumes CentOS7 and epel repos installed)
+2. Run `certbot --nginx` and follow the prompts. The nginx plugin makes the
+   necessary changes to your nginx config to do the validation and to enable SSL.
 
-   ```
-   location ~ /.well-known {
-       root /opt/webroot;
-   }
-   ```
-   and reload nginx with `nginx -s reload`
-
-3. Run `certbot certonly`
-
-   This will ask you for your domain name and web root. If successful, it
-   will go ahead and issue you your cert.
-
-   If your deployment is not yet serving users, and nginx isn't yet running,
-   then choose certbot's "spin up a temporary web server" option for this step.
-
-4. Generate strong dh parameters with
-
-   ```openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048```
-
-5. Modify your nginx config. Add this block for port 80
-
-    ```
-    server {
-         listen 80;
-         server_name deployment.example.com;
-         return 301 https://$server_name$request_uri;
-    }
-    ```
-
-    And change your existing block's listen line to `listen 443 ssl;` and add
-    these new lines to it:
-
-    ```
-    ssl_certificate /etc/letsencrypt/live/deployment.example.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/deployment.example.com/privkey.pem;
-    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-    ssl_prefer_server_ciphers on;
-    ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
-    ssl_ecdh_curve secp384r1;
-    ssl_session_cache shared:SSL:10m;
-    ssl_session_tickets off;
-    ssl_stapling on;
-    ssl_stapling_verify on;
-    add_header Strict-Transport-Security "max-age=6307200; includeSubdomains";
-    add_header X-Frame-Options DENY;
-    add_header X-Content-Type-Options nostiff;
-    ssl_dhparam /etc/ssl/certs/dhparam.pem;
-    ```
-
-    Make sure to change the hostname in the `server_name` directives and in
-    the certificate paths.
-
-   Now test and reload your nginx config
-
-   ```
-   nginx -t && nginx -s reload
-   ```
-
-6. Configure certbot to renew certificates automatically:
+3. Configure certbot to renew certificates automatically:
 
    run `certbot renew --dry-run` to make sure everything looks okay. If you
-   initially had certbot spin up a temporary web server, you may need to
-   reconfigure it to use a webroot.
+used a different method for installing the initial cert, you may need to edit
+the file in `/etc/letsencrypt/renewal/my-hostname.example.com.conf` so that the
+`certbot renew` command knows what to do.
 
-   1. Open the file at `/etc/letsencrypt/renewal/my-hostname.example.com.conf`
-   2. Change the line `authenticator = standalone` to `authenticator = webroot`
-   3. Add these lines at the bottom of the file:
-
-      ```
-      [[webroot_map]]
-      my-hostname.example.com = /opt/webroot
-      ```
-
-   4. Run `certbot renew --dry-run` to make sure it works
-
-   Add the following to a file at `/etc/cron.d/letsencrypt`
+   Then add the following to a file at `/etc/cron.d/letsencrypt`
 
    ```
     MAILTO=admin-email@example.com
     PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
-    15 10,22 * * * root certbot renew --quiet --post-hook "nginx -s reload"
+    15 10,22 * * * root certbot renew --quiet
    ```
    This checks twice a day if the cert needs renewal. You should adjust the exact
    minute and hours attempted to random values, but it's not a huge deal.
