@@ -34,7 +34,7 @@ STATIC_ROOT = path(env.str("STATIC_ROOT"))
 
 # manifest storage is useful for its automatic cache busting properties
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage' \
-                      '.ManifestStaticFilesStorage '
+                      '.ManifestStaticFilesStorage'
 
 
 # Set your MEDIA_ROOT to some directory that's writable by your web server if
