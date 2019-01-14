@@ -18,8 +18,8 @@ All these commands should be run as root, except where indicated by `sudo -u`
     ```
 * Install Python 3.6
     ```bash
-    $ yum install https://centos7.iuscommunity.org/ius-release.rpm
-    $ yum install python36u
+    $ yum install epel-release
+    $ yum install python36
     ```
 * Choose a name for your deployment, usually chosen after the project name.
 This is used in many of the commands below. If you're copy-pasting into bash,
