@@ -52,7 +52,7 @@ then bash will do the substitution for you.
     ```bash
     # On your local machine:
     $ export DEPLOYMENT=deployment
-    $ ./manage.py bundle master --tar -o - | ssh remote-machine.example.com sudo tar xC /opt/$DEPLOYMENT
+    $ ./manage.py bundle master --tar -o - | ssh remote-machine.example.com sudo tar xC /opt/$DEPLOYMENT --no-same-owner
     ```
 
     *See the "Deploying Changes" section below for a convenient script that
@@ -61,12 +61,18 @@ then bash will do the substitution for you.
     ```bash
     $ cd /opt/$DEPLOYMENT
     ```
-* Setup the python virtual environment and install the requirements
+* Setup the python virtual environment and install the requirements. Our
+  new bundle command pre-downloads all dependencies, but we have to turn
+  pip's dependency resolver off because it's not smart enough to realize
+  a dependency of one command line argument is given in another command
+  line argument.
     ```bash
     $ /usr/bin/python3.6 -m venv env
     $ source env/bin/activate
-    $ pip install -r requirements.txt gunicorn psycopg2
+    $ pip install --upgrade pip  # optional
+    $ pip install --no-index --no-deps dependencies/*
     ```
+    
 * Set up environment var file. `cp project/develop/env .env` and then edit `.env`
     * Set `DJANGO_SETTINGS_MODULE=project.deploy.settings`
     * Set `DEBUG=false`
@@ -75,6 +81,7 @@ then bash will do the substitution for you.
     * Set `DATABASE_URL=postgres:///$DEPLOYMENT` (must explicitly set the
         database name, but the username and host are implicit)
     * Any other settings as appropriate for your deployment
+    
 * If you need postgres extensions loaded, do that manually now before you
 migrate
     ```bash
@@ -84,6 +91,7 @@ migrate
     ```sql
     CREATE EXTENSION citext;
     ```
+    
 * Migrate the database to make sure db access is working
     ```bash
     $ sudo -u $DEPLOYMENT env/bin/python ./manage.py migrate

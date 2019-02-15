@@ -4,6 +4,7 @@ import os
 import re
 import sys
 from contextlib import contextmanager
+from distutils.util import get_platform
 from subprocess import (
     PIPE, CalledProcessError, Popen, check_call, check_output,
 )
@@ -30,6 +31,11 @@ class Command(BaseCommand):
         parser.add_argument(
             '-t', '--tar', default=False, dest='tar', action='store_true',
             help='Write output as a tar file (uses a zip archive otherwise).',
+        )
+        parser.add_argument(
+            '--platform',
+            help="The platform to use when downloading wheel dependencies. "
+                 "e.g. 'linux_ppc64le'"
         )
         parser.add_argument(
             'branch',
@@ -66,15 +72,21 @@ class Command(BaseCommand):
             sys.exit(1)
         self.stderr.write(self.style.SUCCESS(success))
 
-    def stream(self, args, cwd=None, check=True):
+    def stream(self, args, cwd=None, check=True, quiet=False):
         """
         Stream the output of the subprocess
         """
         sys.stderr.write("\x1b7")  # Save cursor pos
         sys.stderr.write("\x1b[?1047h")  # Set alternate screen
         sys.stderr.flush()
+
+        if quiet:
+            extra = {'stdout': sys.stderr}
+        else:
+            extra = {}
+
         try:
-            process = Popen(args, cwd=cwd)
+            process = Popen(args, cwd=cwd, **extra)
             process.wait()
 
             if check and process.returncode != 0:
@@ -92,11 +104,15 @@ class Command(BaseCommand):
         ext = 'tar' if options['tar'] else 'zip'
 
         tmp = mkdtemp()  # build directory
+        os.chmod(tmp, 0o755)  # Set normal permissions
         out = options['output']  # output path
+
+        platform = options['platform']
+        platform_name = platform or get_platform().replace("-","_").replace(".","_")
 
         # default output path
         if not out:
-            out = f'bundles/build-{ref}-{sha[:8]}.{ext}'
+            out = f'bundles/build-{ref}-{sha[:8]}-{platform_name}.{ext}'
 
         # Both zip and tar accept `-` to mean standard out
         if out != '-':
@@ -110,7 +126,7 @@ class Command(BaseCommand):
 
         # copy the project to archive directory
         with self.step('Creating build directory at {} ...'.format(tmp)):
-            archive = Popen(['git', 'archive', ref], stdout=PIPE)
+            archive = Popen(['git',  'archive', ref], stdout=PIPE)
             check_call(['tar', '-x', '-C', tmp], stdin=archive.stdout)
             archive.stdout.close()
             archive.wait()
@@ -126,8 +142,7 @@ class Command(BaseCommand):
         if os.path.exists(os.path.join(tmp, 'package.json')):
             with self.step('Found \'package.json\'. Building javascript...'):
                 try:
-                    self.stream(['npm', 'install', '--only=production'],
-                                cwd=tmp)
+                    self.stream(['npm', 'install', '--only=production'], cwd=tmp)
                     self.stream(['npm', 'run', 'build'], cwd=tmp)
                 except OSError as e:
                     raise StepFail("Could not execute NPM commands.\nIf you "
@@ -136,8 +151,21 @@ class Command(BaseCommand):
                                    "the repository.\nOriginal "
                                    "exception was: {}".format(e)) from e
         else:
-            self.stderr.write(
-                '  - No \'package.json\' found. Skipping javascript build.')
+            self.stderr.write('  - No \'package.json\' found. Skipping javascript build.')
+
+        # Gather dependencies
+        with self.step("Gathering dependencies"):
+            args = [
+                'pip', 'download',
+                '--no-deps',
+                '-r', 'requirements.txt',
+                '-d', os.path.join(tmp, 'dependencies'),
+            ]
+            if platform:
+                args.extend([
+                    '--platform', platform,
+                ])
+            self.stream(args, quiet=True)
 
         # Create zip archive
         with self.step('Writing bundle...'):
