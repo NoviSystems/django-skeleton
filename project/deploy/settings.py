@@ -18,8 +18,13 @@ ADMINS = [
     # ('Admin Name', 'admin.email@example.com'),
 ]
 
-# To force SSL if the upstream proxy server doesn't do it for us, set to True
-SECURE_SSL_REDIRECT = False
+# Some security features that we want to ensure we use during production
+# deployments. You can set DISABLE_SSL temporarily when setting things
+# up if you need but don't leave it on for production!
+ssl_on = not env.bool("DISABLE_SSL", False)
+SECURE_SSL_REDIRECT = ssl_on
+SESSION_COOKIE_SECURE = ssl_on
+CSRF_COOKIE_SECURE = ssl_on
 
 
 # Django's development server will automatically serve static files for you,
