@@ -255,7 +255,7 @@ set -e -x
 # Copy the code
 ./manage.py bundle master --tar -o - | ssh $REMOTE sudo tar xC /opt/$DEPLOYMENT
 # Install any new requirements
-ssh $REMOTE sudo /opt/$DEPLOYMENT/env/bin/pip install -r /opt/$DEPLOYMENT/requirements.txt
+ssh $REMOTE sudo /opt/$DEPLOYMENT/env/bin/pip install --no-index --no-deps -f /opt/$DEPLOYMENT/dependencies/ -r /opt/$DEPLOYMENT/requirements.txt
 # Collect any new static files
 ssh $REMOTE sudo /opt/$DEPLOYMENT/env/bin/python /opt/$DEPLOYMENT/manage.py collectstatic --noinput
 # Apply any new database migrations
