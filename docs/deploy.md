@@ -212,7 +212,7 @@ the file in `/etc/letsencrypt/renewal/my-hostname.example.com.conf` so that the
    Then add the following to a file at `/etc/cron.d/letsencrypt`
 
    ```
-    MAILTO=admin-email@example.com
+    #MAILTO=admin-email@example.com
     PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
     15 10,22 * * * root certbot renew --quiet
