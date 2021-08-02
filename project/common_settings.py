@@ -108,6 +108,8 @@ TEMPLATES = [
 # individual widgets
 FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 # Database settings are pulled from the DATABASE_URL environment variable.
 DATABASES = {
     'default': env.db(),
